@@ -5,12 +5,12 @@ IF(PlusLib_DIR)
 ELSE()
   MESSAGE(STATUS "Downloading and building Plus from: https://subversion.assembla.com/svn/plus/trunk/PlusBuild")
 
-  SET (PLUS_DIR ${ep_dependency_DIR}/Plus CACHE INTERNAL "Path to store PlusBuild contents.")
-  SET (PLUS_DIR_BIN_DIR ${ep_dependency_DIR}/Plus-bin CACHE INTERNAL "Path to store PlusBuild contents.")
+  SET (PLUS_SRC_DIR ${ep_dependency_DIR}/Plus CACHE INTERNAL "Path to store PlusBuild contents.")
+  SET (PLUS_BIN_DIR ${ep_dependency_DIR}/Plus-bin CACHE INTERNAL "Path to store PlusBuild contents.")
   ExternalProject_Add(Plus
     PREFIX "${ep_dependency_DIR}/Plus-prefix"
-    SOURCE_DIR "${PLUS_DIR}"
-    BINARY_DIR "${PLUS_DIR_BIN_DIR}"
+    SOURCE_DIR "${PLUS_SRC_DIR}"
+    BINARY_DIR "${PLUS_BIN_DIR}"
     #--Download step--------------
     SVN_USERNAME ${PLUS_ASSEMBLA_USERNAME}
     SVN_PASSWORD ${PLUS_ASSEMBLA_PASSWORD}
@@ -20,7 +20,8 @@ ELSE()
       ${ep_common_args}
       -DVTK_DIR:PATH=${VTK_DIR}
       -DITK_DIR:PATH=${ITK_DIR}
-      -DBUILD_TESTING:BOOL=${BUILD_TESTING}
+      -DBUILD_TESTING:BOOL=OFF
+      -DBUILD_SHARED_LIBS:BOOL=ON
       -DPLUSBUILD_BUILD_PLUSAPP:BOOL=OFF
       -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
       -DQt5_DIR:PATH=${Qt5_DIR}
@@ -53,7 +54,7 @@ ELSE()
       -DPLUS_USE_MMF_VIDEO:BOOL=ON
       -DPLUS_USE_STEALTHLINK:BOOL=OFF
       -DPLUS_USE_PHILIPS_3D_ULTRASOUND:BOOL=OFF
-      -DBUILD_DOCUMENTATION:BOOL=${BUILD_DOCUMENTATION}
+      -DBUILD_DOCUMENTATION:BOOL=OFF
     #--Install step-----------------
     INSTALL_COMMAND "" # Do not install
     DEPENDS ${Plus_DEPENDENCIES}
