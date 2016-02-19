@@ -1,7 +1,5 @@
 PROJECT(RobartsVTKSuperBuild)
 
-# todo python wrapping
-# todo module setup for cuda entries
 # todo module export doesn't have dllexport/import - build_shared_libs?
 
 # CMake version requirements
@@ -244,7 +242,6 @@ ENDIF()
     CMAKE_ARGS 
       -DRobartsVTK_USE_QT:BOOL=${RobartsVTK_USE_QT} 
       -DRobartsVTK_USE_ITK:BOOL=${RobartsVTK_USE_ITK} 
-      -DRobartsVTK_USE_LIBXML2:BOOL=${RobartsVTK_USE_LIBXML2} 
       -DRobartsVTK_USE_PLUS:BOOL=${RobartsVTK_USE_PLUS} 
       -DRobartsVTK_USE_REGISTRATION:BOOL=${RobartsVTK_USE_REGISTRATION} 
       -DRobartsVTK_Include_Outdated_Registration:BOOL=${RobartsVTK_Include_Outdated_Registration} 
