@@ -14,7 +14,6 @@ SET(RobartsVTKLib_DEPENDENCIES)
 # RobartsVTK Options
 OPTION(RobartsVTK_USE_QT "Build with QT enabled" OFF)
 OPTION(RobartsVTK_USE_ITK "Use ITK in RobartsITK" OFF)
-OPTION(RobartsVTK_USE_LIBXML2 "Use LibXml2 in RobartsVTK" ON)
 OPTION(RobartsVTK_USE_PLUS "Use the PLUSToolkit for data collection." OFF)
 OPTION(RobartsVTK_USE_REGISTRATION "Build the vtkRobartsRegistration module" OFF)
 IF (RobartsVTK_USE_REGISTRATION)
@@ -205,20 +204,6 @@ IF(RobartsVTK_USE_ITK)
 ENDIF()
 
 #-----------------------------------------------------------------------------
-# Look for a LibXml2 (optional)
-#-----------------------------------------------------------------------------
-IF(RobartsVTK_USE_LIBXML2)
-  FIND_PACKAGE(LibXml2 QUIET)
-  
-  IF( NOT LibXml2_FOUND )
-    MESSAGE(STATUS "LibXml2 requested but was not found. Please set LibXml2_DIR and try again.")
-  ELSE()
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DLibXml2_DIR:PATH=${LibXml2_DIR})
-    SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} LibXml2)
-  ENDIF()
-ENDIF()
-
-#-----------------------------------------------------------------------------
 # PLUS for data collection
 #-----------------------------------------------------------------------------
 IF(RobartsVTK_USE_PLUS)
@@ -250,7 +235,7 @@ ENDIF()
     BINARY_DIR "${RobartsVTK_BIN_DIR}"
     #--Download step--------------
     GIT_REPOSITORY http://Git.imaging.robarts.ca/repos/RobartsVTK.git
-    GIT_TAG 5b1b1c0fb7788613776b5ab9e6a1bb3d7da06a76
+    GIT_TAG 0ae8186cb4ac7b712d6ef0d864bc3f6e48f5e305
     #--Configure step-------------
     CMAKE_ARGS 
       -DRobartsVTK_USE_QT:BOOL=${RobartsVTK_USE_QT} 
