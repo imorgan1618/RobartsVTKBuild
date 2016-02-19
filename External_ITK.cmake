@@ -2,6 +2,8 @@ IF(ITK_DIR)
   # ITK has been built already
   FIND_PACKAGE(ITK REQUIRED NO_MODULE PATHS ${ITK_DIR} NO_DEFAULT_PATH)
   
+  # TODO : Check that the VTK provided is configured in such a way that is acceptable to use
+
   MESSAGE(STATUS "Using ITK available at: ${ITK_DIR}")
 ELSE(ITK_DIR)
   # ITK has not been built yet, so download and build it as an external project

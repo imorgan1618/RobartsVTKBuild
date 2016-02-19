@@ -2,6 +2,8 @@ IF(VTK_DIR)
   # VTK has been built already
   FIND_PACKAGE(VTK 6.2.0 REQUIRED NO_MODULE PATHS ${VTK_DIR} NO_DEFAULT_PATH)
   
+  # TODO : Check that the VTK provided is configured in such a way that is acceptable to use
+
   MESSAGE(STATUS "Using VTK available at: ${VTK_DIR}")
 ELSE(VTK_DIR)
   # VTK has not been built yet, so download and build it as an external project
