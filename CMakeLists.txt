@@ -116,25 +116,26 @@ IF(RobartsVTK_USE_QT)
 
   FIND_PACKAGE(Qt4 QUIET)
   IF ( NOT QT4_FOUND )
-    IF(EXISTS ${QT_QMAKE_EXECUTABLE} AND NOT Qt5_DIR)
+    IF(EXISTS ${QT_QMAKE_EXECUTABLE} AND ${Qt5_DIR} STREQUAL "Qt5_DIR-NOTFOUND")
       GET_FILENAME_COMPONENT(ROBARTS_QT_BIN_DIR ${QT_QMAKE_EXECUTABLE} DIRECTORY)
       GET_FILENAME_COMPONENT(ROBARTS_QT_TOP_DIR ${ROBARTS_QT_BIN_DIR} DIRECTORY)
       GET_FILENAME_COMPONENT(CMAKE_PREFIX_PATH ${ROBARTS_QT_BIN_DIR} DIRECTORY)
-      SET(Qt5_DIR ${ROBARTS_QT_TOP_DIR}/lib/cmake/Qt5)
+      SET(Qt5_DIR ${ROBARTS_QT_TOP_DIR}/lib/cmake/Qt5 FORCE)
     ENDIF()
 
     FIND_PACKAGE(Qt5 QUIET COMPONENTS Widgets NO_MODULE)
 
-    IF( ${QT_QMAKE_EXECUTABLE} STREQUAL "NOTFOUND" AND NOT ${Qt5_DIR} STREQUAL "Qt5_DIR-NOTFOUND")
+    IF ( NOT Qt5_FOUND )
+      MESSAGE( FATAL_ERROR "This project requires Qt4 or Qt5 for building PlusApp. These components are missing. Please verify configuration by selecting QT_QMAKE_EXECUTABLE (Qt4) or Qt5_DIR (Qt5) or turn off RobartsVTK_USE_QT option.")
+    ENDIF()
+
+    IF( ${QT_QMAKE_EXECUTABLE} STREQUAL "NOTFOUND" AND NOT ${Qt5_DIR} STREQUAL "Qt5_DIR-NOTFOUND" )
       GET_FILENAME_COMPONENT(ROBARTS_QT_CMAKE_DIR ${Qt5_DIR} DIRECTORY)
       GET_FILENAME_COMPONENT(ROBARTS_QT_LIB_DIR ${ROBARTS_QT_CMAKE_DIR} DIRECTORY)
       GET_FILENAME_COMPONENT(ROBARTS_QT_TOP_DIR ${ROBARTS_QT_LIB_DIR} DIRECTORY)
       SET(QT_QMAKE_EXECUTABLE ${ROBARTS_QT_TOP_DIR}/bin/qmake${CMAKE_EXECUTABLE_SUFFIX} CACHE FILEPATH "Location of Qt qmake executable." FORCE)
     ENDIF()
 
-    IF ( NOT Qt5_FOUND )
-      MESSAGE( FATAL_ERROR "This project requires Qt4 or Qt5 for building PlusApp. These components are missing. Please verify configuration by selecting QT_QMAKE_EXECUTABLE (Qt4) or Qt5_DIR (Qt5) or turn off RobartsVTK_USE_QT option.")
-    ENDIF()
     SET(QT_VERSION_MAJOR ${Qt5_VERSION_MAJOR})
   ENDIF()
 
@@ -235,7 +236,7 @@ ENDIF()
     BINARY_DIR "${RobartsVTK_BIN_DIR}"
     #--Download step--------------
     GIT_REPOSITORY http://Git.imaging.robarts.ca/repos/RobartsVTK.git
-    GIT_TAG 0ae8186cb4ac7b712d6ef0d864bc3f6e48f5e305
+    GIT_TAG 31b9cc2d606dbf9cc5eabcdf5a58b5205b4324d4
     #--Configure step-------------
     CMAKE_ARGS 
       -DRobartsVTK_USE_QT:BOOL=${RobartsVTK_USE_QT} 
