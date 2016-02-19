@@ -237,7 +237,7 @@ ENDIF()
     BINARY_DIR "${RobartsVTK_BIN_DIR}"
     #--Download step--------------
     GIT_REPOSITORY http://Git.imaging.robarts.ca/repos/RobartsVTK.git
-    GIT_TAG 7c4bcebdb007738ac6090dd8e1cf116492862659
+    GIT_TAG master
     #--Configure step-------------
     CMAKE_ARGS 
       -DRobartsVTK_USE_QT:BOOL=${RobartsVTK_USE_QT} 
