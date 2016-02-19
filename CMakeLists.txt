@@ -143,6 +143,7 @@ IF(RobartsVTK_USE_QT)
     SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} Qt4::QtCore)
   ELSE()
     SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} Qt5::Widgets)
+    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DQt5_DIR:PATH=${Qt5_DIR})
   ENDIF()
 ENDIF ()
 
@@ -235,7 +236,7 @@ ENDIF()
     BINARY_DIR "${RobartsVTK_BIN_DIR}"
     #--Download step--------------
     GIT_REPOSITORY http://Git.imaging.robarts.ca/repos/RobartsVTK.git
-    GIT_TAG 0ae8186cb4ac7b712d6ef0d864bc3f6e48f5e305
+    GIT_TAG f8ee11126167787be9680c0958f8015e4488cfc6
     #--Configure step-------------
     CMAKE_ARGS 
       -DRobartsVTK_USE_QT:BOOL=${RobartsVTK_USE_QT} 
