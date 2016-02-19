@@ -5,6 +5,8 @@ IF(VTK_DIR)
   # TODO : Check that the VTK provided is configured in such a way that is acceptable to use
 
   MESSAGE(STATUS "Using VTK available at: ${VTK_DIR}")
+  
+  SET(RobartsVTK_VTK_DIR ${VTK_DIR})
 ELSE(VTK_DIR)
   # VTK has not been built yet, so download and build it as an external project
   SET(RobartsVTK_VTK6_MINOR_VERSION 2 CACHE STRING "Specify the minor version of VTK6 to use.")
