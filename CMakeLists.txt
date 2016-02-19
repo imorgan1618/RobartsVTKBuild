@@ -1,7 +1,5 @@
 PROJECT(RobartsVTKSuperBuild)
 
-# todo python wrapping
-# todo module setup for cuda entries
 # todo module export doesn't have dllexport/import - build_shared_libs?
 
 # CMake version requirements
@@ -236,7 +234,7 @@ ENDIF()
     BINARY_DIR "${RobartsVTK_BIN_DIR}"
     #--Download step--------------
     GIT_REPOSITORY http://Git.imaging.robarts.ca/repos/RobartsVTK.git
-    GIT_TAG f8ee11126167787be9680c0958f8015e4488cfc6
+    GIT_TAG master
     #--Configure step-------------
     CMAKE_ARGS 
       -DRobartsVTK_USE_QT:BOOL=${RobartsVTK_USE_QT} 
