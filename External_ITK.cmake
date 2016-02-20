@@ -10,9 +10,12 @@ IF(ITK_DIR)
 ELSE(ITK_DIR)
   # ITK has not been built yet, so download and build it as an external project
   SET (ITKv4_REPOSITORY ${GIT_PROTOCOL}://itk.org/ITK.git)
-  SET (ITKv4_GIT_TAG 8d58556089399c11d51795d46d6b17c355af95dc) #v4.7.2 from 2015-04-30
+  SET (ITKv4_GIT_TAG v4.8.0)
   
   MESSAGE(STATUS "Downloading and building ITK from: ${GIT_PROTOCOL}://itk.org/ITK.git")
+
+  # Strip -std=c++11 and/or -std=c++0x from ep_common_args because ITK doesn't support it
+  STRING(REGEX REPLACE "(.*)-std=c\\+\\+..(.*)" "\\1\\2" itk_ep_common_cxx_flags ${ep_common_cxx_flags})
 
   SET (RobartsVTK_ITK_SRC_DIR "${ep_dependency_DIR}/itk")
   SET (RobartsVTK_ITK_DIR "${ep_dependency_DIR}/itk-bin" CACHE INTERNAL "Path to store itk binaries")
@@ -32,7 +35,7 @@ ELSE(ITK_DIR)
       -DBUILD_EXAMPLES:BOOL=OFF
       -DKWSYS_USE_MD5:BOOL=ON
       -DITK_USE_REVIEW:BOOL=ON
-      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
+      -DCMAKE_CXX_FLAGS:STRING=${itk_ep_common_cxx_flags}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
       -DITK_WRAP_PYTHON:BOOL=OFF
       -DITK_LEGACY_REMOVE:BOOL=ON
