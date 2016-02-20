@@ -101,20 +101,23 @@ ENDIF()
 # Qt comes first so we know which version to pass to VTK
 #-----------------------------------------------------------------------------
 IF(RobartsVTK_USE_QT)
-  FIND_FILE(QT_QMAKE_EXECUTABLE qmake${CMAKE_EXECUTABLE_SUFFIX} 
-    PATH
-      $ENV{QTDIR}
-      "C:/Qt/4.7.4/bin"
-      "../Qt/4.7.4/bin"
-      "../../Qt/4.7.4/bin"
-      "C:/Qt/4.8.7/bin"
-      "../Qt/4.8.7/bin"
-      "../../Qt/4.8.7/bin"
-    )
+  IF( NOT QT_QMAKE_EXECUTABLE )
+    FIND_FILE(QT_QMAKE_EXECUTABLE qmake${CMAKE_EXECUTABLE_SUFFIX} 
+      PATH
+        $ENV{QTDIR}
+        "C:/Qt/4.7.4/bin"
+        "../Qt/4.7.4/bin"
+        "../../Qt/4.7.4/bin"
+        "C:/Qt/4.8.7/bin"
+        "../Qt/4.8.7/bin"
+        "../../Qt/4.8.7/bin"
+      )
+  ENDIF()
 
   FIND_PACKAGE(Qt4 QUIET)
   IF ( NOT QT4_FOUND )
-    IF(EXISTS ${QT_QMAKE_EXECUTABLE} AND ${Qt5_DIR} STREQUAL "Qt5_DIR-NOTFOUND")
+    IF(WIN32 AND EXISTS ${QT_QMAKE_EXECUTABLE} AND "${Qt5_DIR}" STREQUAL "Qt5_DIR-NOTFOUND")
+      # In Windows, support the QT_QMAKE_EXECUTABLE way for Qt5
       GET_FILENAME_COMPONENT(ROBARTS_QT_BIN_DIR ${QT_QMAKE_EXECUTABLE} DIRECTORY)
       GET_FILENAME_COMPONENT(ROBARTS_QT_TOP_DIR ${ROBARTS_QT_BIN_DIR} DIRECTORY)
       GET_FILENAME_COMPONENT(CMAKE_PREFIX_PATH ${ROBARTS_QT_BIN_DIR} DIRECTORY)
@@ -127,7 +130,11 @@ IF(RobartsVTK_USE_QT)
       MESSAGE( FATAL_ERROR "This project requires Qt4 or Qt5 for building PlusApp. These components are missing. Please verify configuration by selecting QT_QMAKE_EXECUTABLE (Qt4) or Qt5_DIR (Qt5) or turn off RobartsVTK_USE_QT option.")
     ENDIF()
 
-    IF( ${QT_QMAKE_EXECUTABLE} STREQUAL "NOTFOUND" AND NOT ${Qt5_DIR} STREQUAL "Qt5_DIR-NOTFOUND" )
+    IF(UNIX AND "${Qt5_DIR}" MATCHES "cmake")
+      GET_FILENAME_COMPONENT(CMAKE_PREFIX_PATH ${Qt5_DIR} DIRECTORY)
+    ENDIF()
+
+    IF( WIN32 AND "${QT_QMAKE_EXECUTABLE}" STREQUAL "NOTFOUND" )
       GET_FILENAME_COMPONENT(ROBARTS_QT_CMAKE_DIR ${Qt5_DIR} DIRECTORY)
       GET_FILENAME_COMPONENT(ROBARTS_QT_LIB_DIR ${ROBARTS_QT_CMAKE_DIR} DIRECTORY)
       GET_FILENAME_COMPONENT(ROBARTS_QT_TOP_DIR ${ROBARTS_QT_LIB_DIR} DIRECTORY)
