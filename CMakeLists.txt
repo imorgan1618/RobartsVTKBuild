@@ -31,6 +31,7 @@ OPTION(RobartsVTK_WRAP_PYTHON "Wrap the RobartsVTK libs in Python." ON)
 OPTION(BUILD_SHARED_LIBS "Build shared libraries." OFF)
 OPTION(BUILD_TESTING "Build testing." OFF)
 OPTION(BUILD_DOCUMENTATION "Build Documentation" OFF)
+OPTION(RobartsVTK_USE_QT5_ONLY "Only search for Qt5." ON)
 
 #-----------------------------------------------------------------------------
 # Preparatory setup
@@ -113,7 +114,10 @@ IF(RobartsVTK_USE_QT)
       )
   ENDIF()
 
-  FIND_PACKAGE(Qt4 QUIET)
+  IF(NOT RobartsVTK_USE_QT5_ONLY)
+      FIND_PACKAGE(Qt4 QUIET)
+  ENDIF()
+
   IF ( NOT QT4_FOUND )
     IF(WIN32 AND EXISTS ${QT_QMAKE_EXECUTABLE} AND "${Qt5_DIR}" STREQUAL "Qt5_DIR-NOTFOUND")
       # In Windows, support the QT_QMAKE_EXECUTABLE way for Qt5
@@ -270,6 +274,7 @@ ENDIF()
       -DRobartsVTK_USE_CUDA:BOOL=${RobartsVTK_USE_CUDA} 
       -DRobartsVTK_USE_CUDA_VISUALIZATION:BOOL=${RobartsVTK_USE_CUDA_VISUALIZATION} 
       -DRobartsVTK_USE_CUDA_ANALYTICS:BOOL=${RobartsVTK_USE_CUDA_ANALYTICS} 
+      -DRobartsVTK_USE_QT5_ONLY:BOOL=${RobartsVTK_USE_QT5_ONLY}
       -DRobartsVTK_BUILD_EXAMPLES:BOOL=${RobartsVTK_BUILD_EXAMPLES} 
       -DRobartsVTK_WRAP_PYTHON:BOOL=${RobartsVTK_WRAP_PYTHON} 
       -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS} 
