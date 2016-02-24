@@ -26,7 +26,6 @@ The superbuild will download and build needed dependencies. Only two items must 
 
 ### CMake Configuration
 The following variables should be set when configuring RobartsVTK
-* BUILD_SHARED_LIBS:BOOL = `OFF` (ON is experimental)
 * RobartsVTK_Include_Outdated_Registration:BOOL = `OFF`
 * ITK_DIR:PATH = `<path/to/your/itk-bin/dir>` (optional, if built elsewhere)
 * PlusLib_DIR:PATH = `<path/to/your/plus-bin/dir>` (optional, if built elsewhere)
