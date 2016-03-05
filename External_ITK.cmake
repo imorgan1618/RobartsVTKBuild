@@ -10,12 +10,9 @@ IF(ITK_DIR)
 ELSE(ITK_DIR)
   # ITK has not been built yet, so download and build it as an external project
   SET (ITKv4_REPOSITORY ${GIT_PROTOCOL}://itk.org/ITK.git)
-  SET (ITKv4_GIT_TAG v4.8.0)
+  SET (ITKv4_GIT_TAG v4.9.0) # 4.9 supports -std=c++11
   
   MESSAGE(STATUS "Downloading and building ITK from: ${GIT_PROTOCOL}://itk.org/ITK.git")
-
-  # Strip -std=c++11 and/or -std=c++0x from ep_common_args because ITK doesn't support it
-  STRING(REGEX REPLACE "(.*)-std=c\\+\\+..(.*)" "\\1\\2" itk_ep_common_cxx_flags ${ep_common_cxx_flags})
 
   SET (RobartsVTK_ITK_SRC_DIR "${ep_dependency_DIR}/itk")
   SET (RobartsVTK_ITK_DIR "${ep_dependency_DIR}/itk-bin" CACHE INTERNAL "Path to store itk binaries")
