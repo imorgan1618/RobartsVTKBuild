@@ -1,7 +1,5 @@
 PROJECT(RobartsVTKSuperBuild)
 
-# todo module export doesn't have dllexport/import - build_shared_libs?
-
 # CMake version requirements
 CMAKE_MINIMUM_REQUIRED(VERSION 3.2)
 cmake_policy(SET CMP0003 NEW)
