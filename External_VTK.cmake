@@ -1,26 +1,19 @@
 IF(VTK_DIR)
   # VTK has been built already
-  FIND_PACKAGE(VTK 6.2.0 REQUIRED NO_MODULE PATHS ${VTK_DIR} NO_DEFAULT_PATH)
+  FIND_PACKAGE(VTK 6.3.0 REQUIRED NO_MODULE PATHS ${VTK_DIR} NO_DEFAULT_PATH)
   
-  # TODO : Check that the VTK provided is configured in such a way that is acceptable to use
+  IF( NOT VTK_WRAP_PYTHON AND RobartsVTK_WRAP_PYTHON )
+    MESSAGE(FATAL_ERROR "Python wrapping requested but VTK located at \"${VTK_DIR}\" was not built with python wrapping enabled.")
+  ENDIF()
 
   MESSAGE(STATUS "Using VTK available at: ${VTK_DIR}")
   
   SET(RobartsVTK_VTK_DIR ${VTK_DIR})
 ELSE(VTK_DIR)
   # VTK has not been built yet, so download and build it as an external project
-  SET(RobartsVTK_VTK6_MINOR_VERSION 2 CACHE STRING "Specify the minor version of VTK6 to use.")
-  MARK_AS_ADVANCED(RobartsVTK_VTK6_MINOR_VERSION)
-  SET(VTK_GIT_REPOSITORY "github.com/Slicer/VTK.git")
 
-  IF(RobartsVTK_VTK6_MINOR_VERSION EQUAL "2")
-    SET(VTK_GIT_TAG "95aea46c32ab995f3359cf6d9c5b9691e73e4ae9") #v6.2.0 from 2015-03-02
-  ELSEIF(RobartsVTK_VTK6_MINOR_VERSION EQUAL "3")
-    SET(VTK_GIT_TAG "2684b005cb89799879467a9ea401e194537496b7") #v6.3.0 from 2015-09-01
-  ELSE()
-    #default to 6.2.0
-    SET(VTK_GIT_TAG "95aea46c32ab995f3359cf6d9c5b9691e73e4ae9") #v6.2.0 from 2015-03-02
-  ENDIF()
+  SET(VTK_GIT_REPOSITORY "github.com/Slicer/VTK.git")
+  SET(VTK_GIT_TAG "fe92273888219edca422f3a308761ddcd2882e2b")
 
   MESSAGE(STATUS "Downloading and building VTK from: ${GIT_PROTOCOL}://${VTK_GIT_REPOSITORY}")
 
