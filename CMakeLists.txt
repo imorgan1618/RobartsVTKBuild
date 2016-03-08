@@ -30,7 +30,9 @@ OPTION(RobartsVTK_WRAP_PYTHON "Wrap the RobartsVTK libs in Python." ON)
 OPTION(BUILD_SHARED_LIBS "Build shared libraries." OFF)
 OPTION(BUILD_TESTING "Build testing." OFF)
 OPTION(BUILD_DOCUMENTATION "Build Documentation" OFF)
-OPTION(RobartsVTK_USE_QT5_ONLY "Only search for Qt5." ON)
+IF( RobartsVTK_USE_QT )
+  OPTION(RobartsVTK_USE_QT5_ONLY "Only search for Qt5." OFF)
+ENDIF()
 
 #-----------------------------------------------------------------------------
 # Preparatory setup
@@ -58,19 +60,51 @@ SET(PLUS_ASSEMBLA_USERNAME "perklab_anonymous" )
 SET(PLUS_ASSEMBLA_PASSWORD "anonymous" )
 
 #-----------------------------------------------------------------------------
+# If Slicer_DIR is present, use it to load a number of dependency information
+#-----------------------------------------------------------------------------
+IF( Slicer_DIR )
+  # The Slicer4 config file complains if these are set.
+  UNSET (QT_QMAKE_EXECUTABLE CACHE)
+  UNSET (QT_BINARY_DIR CACHE)
+  UNSET (VTK_DIR CACHE)
+  UNSET (ITK_DIR CACHE)
+  UNSET (PYTHON_LIBRARY CACHE)
+  UNSET (PYTHON_DEBUG_LIBRARY CACHE)
+
+  FIND_PACKAGE(Slicer)
+  
+  IF( Slicer_FOUND )
+    INCLUDE(${Slicer_USE_FILE})
+  ENDIF()
+  
+  IF( ${QT_VERSION_MAJOR} EQUAL 4 )
+    SET(RobartsVTK_USE_QT5_ONLY OFF)
+  ENDIF()
+  
+  # Do not use the openigtlink provided by slicer, we are using igtl v3 in plus
+  UNSET(OpenIGTLink_DIR CACHE)
+  
+  IF( VTK_WRAP_PYTHON )
+    SET(RobartsVTK_WRAP_PYTHON ON)
+  ENDIF()
+ENDIF()
+
+#-----------------------------------------------------------------------------
 # GIT - Let's check if a valid version of GIT is available
 #-----------------------------------------------------------------------------
 SET(GIT_PROTOCOL "git")
 
-MARK_AS_ADVANCED(CLEAR GIT_EXECUTABLE)
-FIND_FILE(GIT_EXECUTABLE git${CMAKE_EXECUTABLE_SUFFIX} 
-  PATHS 
-    "c:/Program Files/Git/bin/"
-    "c:/Program Files (x86)/Git/bin/"
-  )
-FIND_PACKAGE(Git)
-IF(NOT GIT_FOUND)
-  MESSAGE(FATAL_ERROR "ERROR: Install Git and try to re-configure")
+IF( NOT GIT_EXECUTABLE)
+  MARK_AS_ADVANCED(CLEAR GIT_EXECUTABLE)
+  FIND_FILE(GIT_EXECUTABLE git${CMAKE_EXECUTABLE_SUFFIX} 
+    PATHS 
+      "c:/Program Files/Git/bin/"
+      "c:/Program Files (x86)/Git/bin/"
+    )
+  FIND_PACKAGE(Git)
+  IF(NOT GIT_FOUND)
+    MESSAGE(FATAL_ERROR "ERROR: Install Git and try to re-configure")
+  ENDIF()
 ENDIF()
 
 #-----------------------------------------------------------------------------
@@ -92,7 +126,7 @@ IF( RobartsVTK_WRAP_PYTHON )
       NO_SYSTEM_ENVIRONMENT_PATH
     )
 
-    SET(RobartsVTK_VTK_PYTHON_ARGS ${RobartsVTK_VTK_PYTHON_ARGS} -DPYTHON_INCLUDE_DIR:PATH=${PYTHON_INCLUDE_DIR} -DPYTHON_LIBRARY:FILEPATH=${PYTHON_LIBRARY} -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE})
+    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DPYTHON_INCLUDE_DIR:PATH=${PYTHON_INCLUDE_DIR} -DPYTHON_LIBRARY:FILEPATH=${PYTHON_LIBRARY} -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE})
   ENDIF()
 ENDIF()
 
@@ -153,7 +187,7 @@ IF(RobartsVTK_USE_QT)
     SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} Qt5::Widgets)
     SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DQt5_DIR:PATH=${Qt5_DIR})
   ENDIF()
-ENDIF ()
+ENDIF()
 
 #-----------------------------------------------------------------------------
 # External project build flags

@@ -34,7 +34,7 @@ ELSE()
       -DQt5_DIR:PATH=${Qt5_DIR}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}    
-      -DPLUS_USE_OpenIGTLink:BOOL=ON
+      -DPLUSBUILD_USE_OpenIGTLink:BOOL=ON
       -DPLUS_USE_tesseract:BOOL=ON
       -DPLUS_USE_ULTRASONIX_VIDEO:BOOL=OFF
       -DPLUS_USE_BKPROFOCUS_VIDEO:BOOL=OFF
