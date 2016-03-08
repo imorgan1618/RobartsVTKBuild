@@ -6,7 +6,7 @@ RobartsVTKBuild is a CMake project that downloads dependencies for the RobartsVT
 
 Using a [git](https://en.wikipedia.org/wiki/Git_(software)) client, clone the repo link above.
 * Windows? Try [TortoiseGit](https://tortoisegit.org/download/)
-* Ubuntu? Try [SmartGit](http://www.syntevo.com/smartgit/) or [git-cola](http://git-cola.github.io/downloads.html)
+* Ubuntu? Try [RabbitVCS](http://rabbitvcs.org/), [SmartGit](http://www.syntevo.com/smartgit/) or [git-cola](http://git-cola.github.io/downloads.html)
 * Mac? Try [GitHub](https://desktop.github.com/)
 
 ## Building RobartsVTK
