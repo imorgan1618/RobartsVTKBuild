@@ -32,7 +32,7 @@ ELSE(ITK_DIR)
       -DBUILD_EXAMPLES:BOOL=OFF
       -DKWSYS_USE_MD5:BOOL=ON
       -DITK_USE_REVIEW:BOOL=ON
-      -DCMAKE_CXX_FLAGS:STRING=${itk_ep_common_cxx_flags}
+      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
       -DITK_WRAP_PYTHON:BOOL=OFF
       -DITK_LEGACY_REMOVE:BOOL=ON
