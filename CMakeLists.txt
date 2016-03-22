@@ -244,7 +244,7 @@ ELSE()
 ENDIF()
 
 #-----------------------------------------------------------------------------
-# Look for an ITK build directory (optional)
+# ITK
 #-----------------------------------------------------------------------------
 IF(RobartsVTK_USE_ITK)
   INCLUDE(External_ITK.cmake)
@@ -263,7 +263,7 @@ IF(RobartsVTK_USE_ITK)
 ENDIF()
 
 #-----------------------------------------------------------------------------
-# PLUS for data collection
+# PLUS
 #-----------------------------------------------------------------------------
 IF(RobartsVTK_USE_PLUS)
   INCLUDE(External_PlusBuild.cmake)
@@ -277,6 +277,38 @@ IF(RobartsVTK_USE_PLUS)
   ENDIF()
 ENDIF()
 
+IF (RobartsVTK_USE_CUDA)
+  FIND_PACKAGE(CUDA REQUIRED)
+
+  SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DCUDA_TOOLKIT_ROOT_DIR:PATH=${CUDA_TOOLKIT_ROOT_DIR})
+ENDIF()
+
+#-----------------------------------------------------------------------------
+# OpenCV/freeglut
+#-----------------------------------------------------------------------------
+IF(RobartsVTK_BUILD_APPS)
+  INCLUDE(External_OpenCV.cmake)
+  INCLUDE(External_freeglut.cmake)
+  
+  IF( OpenCV_DIR )
+    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DOpenCV_DIR:PATH=${OpenCV_DIR})
+  ELSE()
+    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DOpenCV_DIR:PATH=${OpenCV_BIN_DIR})
+  ENDIF()
+  
+  IF( freeglut_DIR )
+    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -Dfreeglut_DIR:PATH=${freeglut_DIR})
+  ELSE()
+    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -Dfreeglut_DIR:PATH=${freeglut_BIN_DIR})
+  ENDIF()
+
+  SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} freeglut)
+  SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} OpenCV)
+ENDIF()
+
+#-----------------------------------------------------------------------------
+# CUDA
+#-----------------------------------------------------------------------------
 IF (RobartsVTK_USE_CUDA)
   FIND_PACKAGE(CUDA REQUIRED)
 
