@@ -297,9 +297,9 @@ IF(RobartsVTK_BUILD_APPS)
   ENDIF()
   
   IF( freeglut_DIR )
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -Dfreeglut_DIR:PATH=${freeglut_DIR})
+    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DGLUT_INCLUDE_DIR:PATH=${GLUT_INCLUDE_DIR} -DGLUT_glut_LIBRARY:FILEPATH=${GLUT_glut_LIBRARY})
   ELSE()
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -Dfreeglut_DIR:PATH=${freeglut_BIN_DIR})
+    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DGLUT_INCLUDE_DIR:PATH=${freeglut_BIN_DIR}/install/include -DGLUT_glut_LIBRARY:FILEPATH=${freeglut_BIN_DIR}/install/lib/freeglut${CMAKE_STATIC_LIBRARY_SUFFIX} -DGLUT_ROOT_PATH=${freeglut_BIN_DIR}/install)
   ENDIF()
 
   SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} freeglut)
