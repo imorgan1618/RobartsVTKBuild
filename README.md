@@ -9,9 +9,6 @@ Using a [git](https://en.wikipedia.org/wiki/Git_(software)) client, clone the re
 * Ubuntu? Try [RabbitVCS](http://rabbitvcs.org/), [SmartGit](http://www.syntevo.com/smartgit/) or [git-cola](http://git-cola.github.io/downloads.html)
 * Mac? Try [GitHub](https://desktop.github.com/)
 
-## Building RobartsVTK
-For convenient building, please see the RobartsVTK [super build](http://git.imaging.robarts.ca/repos/RobartsVTKBuild) project.
-
 ### Known Configurations
 RobartsVTK has been built on the following configurations:
 * Windows 10 x64, Visual Studio 2012, 32/64bit builds
