@@ -23,6 +23,7 @@ The superbuild will download and build needed dependencies. Only two items must 
 * [CMake 3.4](https://cmake.org/download/)
 * [CUDA 7](https://developer.nvidia.com/cuda-downloads) (optional)
 * [Qt](http://download.qt.io/archive/qt/) - built (optional, please follow Qt build instructions)
+* [Python 2.7 x64](https://www.python.org/downloads/release/python-2711/) - installed (optional)
 
 ### CMake Configuration
 The following variables should be set when configuring RobartsVTK
