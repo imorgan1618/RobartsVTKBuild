@@ -297,9 +297,9 @@ IF(RobartsVTK_BUILD_APPS)
   ENDIF()
   
   IF( freeglut_DIR )
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -Dfreeglut_DIR:PATH=${freeglut_DIR} )
+    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DFreeGLUT_DIR:PATH=${FreeGLUT_DIR} )
   ELSE()
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -Dfreeglut_DIR:PATH=${freeglut_BIN_DIR}/FreeGLUT)
+    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DFreeGLUT_DIR:PATH=${freeglut_BIN_DIR}/FreeGLUT)
   ENDIF()
 
   SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} freeglut)
