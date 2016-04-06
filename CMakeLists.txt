@@ -12,9 +12,6 @@ OPTION(RobartsVTK_USE_QT "Build with QT enabled" OFF)
 OPTION(RobartsVTK_USE_ITK "Use ITK in RobartsITK" OFF)
 OPTION(RobartsVTK_USE_PLUS "Use the PLUSToolkit for data collection." OFF)
 OPTION(RobartsVTK_USE_REGISTRATION "Build the vtkRobartsRegistration module" OFF)
-IF (RobartsVTK_USE_REGISTRATION)
-  OPTION(RobartsVTK_Include_Outdated_Registration "Include classes that still use VTK4 pipeline style." OFF)
-ENDIF ()
 OPTION(RobartsVTK_USE_COMMON "Build the vtkRobartsCommon module" ON)
 OPTION(RobartsVTK_USE_CUDA "Build the CUDA modules" OFF)
 IF (RobartsVTK_USE_CUDA)
@@ -333,7 +330,6 @@ ENDIF()
       -DRobartsVTK_USE_ITK:BOOL=${RobartsVTK_USE_ITK} 
       -DRobartsVTK_USE_PLUS:BOOL=${RobartsVTK_USE_PLUS} 
       -DRobartsVTK_USE_REGISTRATION:BOOL=${RobartsVTK_USE_REGISTRATION} 
-      -DRobartsVTK_Include_Outdated_Registration:BOOL=${RobartsVTK_Include_Outdated_Registration} 
       -DRobartsVTK_USE_COMMON:BOOL=${RobartsVTK_USE_COMMON} 
       -DRobartsVTK_USE_CUDA:BOOL=${RobartsVTK_USE_CUDA} 
       -DRobartsVTK_USE_CUDA_VISUALIZATION:BOOL=${RobartsVTK_USE_CUDA_VISUALIZATION} 

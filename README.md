@@ -24,7 +24,6 @@ The superbuild will download and build needed dependencies. Only two items must 
 
 ### CMake Configuration
 The following variables should be set when configuring RobartsVTK
-* RobartsVTK_Include_Outdated_Registration:BOOL = `OFF`
 * ITK_DIR:PATH = `<path/to/your/itk-bin/dir>` (optional, if built elsewhere)
 * PlusLib_DIR:PATH = `<path/to/your/plus-bin/dir>` (optional, if built elsewhere)
 * QT4 - QT_QMAKE_EXECUTABLE:FILEPATH = `<path/to/your/qt-buildOrInstall>/bin/qmake.exe`
