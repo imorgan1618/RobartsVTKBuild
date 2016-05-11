@@ -56,6 +56,7 @@ ELSE(VTK_DIR)
         -DVTK_QT_VERSION:STRING=${QT_VERSION_MAJOR}
         -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
         -DVTK_WRAP_PYTHON:BOOL=${RobartsVTK_WRAP_PYTHON}
+        -DVTK_SMP_IMPLEMENTATION_TYPE:STRING="OpenMP"
         -DCMAKE_PREFIX_PATH:STRING=${CMAKE_PREFIX_PATH}
     #--Build step-----------------
     #--Install step-----------------
