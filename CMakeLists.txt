@@ -281,25 +281,17 @@ IF (RobartsVTK_USE_CUDA)
 ENDIF()
 
 #-----------------------------------------------------------------------------
-# OpenCV/freeglut
+# OpenCV
 #-----------------------------------------------------------------------------
 IF(RobartsVTK_BUILD_APPS)
   INCLUDE(External_OpenCV.cmake)
-  INCLUDE(External_freeglut.cmake)
   
   IF( OpenCV_DIR )
     SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DOpenCV_DIR:PATH=${OpenCV_DIR})
   ELSE()
     SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DOpenCV_DIR:PATH=${OpenCV_BIN_DIR})
   ENDIF()
-  
-  IF( freeglut_DIR )
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DFreeGLUT_DIR:PATH=${FreeGLUT_DIR} )
-  ELSE()
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DFreeGLUT_DIR:PATH=${freeglut_BIN_DIR}/FreeGLUT)
-  ENDIF()
 
-  SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} freeglut)
   SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} OpenCV)
 ENDIF()
 

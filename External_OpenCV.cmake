@@ -1,5 +1,5 @@
 IF(OpenCV_DIR)
-  FIND_PACKAGE(OpenCV 2.3.1 REQUIRED NO_MODULE PATHS ${OpenCV_DIR})
+  FIND_PACKAGE(OpenCV 3.1.0 REQUIRED NO_MODULE PATHS ${OpenCV_DIR})
 
   MESSAGE(STATUS "Using OpenCV available at: ${OpenCV_DIR}")
 ELSE()
@@ -23,6 +23,12 @@ ELSE()
   ELSE()
     SET(opencv_common_cxx_flags ${ep_common_cxx_flags})
   ENDIF()
+  
+  IF( "${VTK_RENDERING_BACKEND}" STREQUAL "OpenGL" )
+    SET( OpenCV_VTK_ARGS -DWITH_VTK:BOOL=ON -DVTK_DIR:PATH=${RobartsVTK_VTK_DIR} )
+  ELSE()
+    SET( OpenCV_VTK_ARGS )
+  ENDIF()
 
   SET (OpenCV_SRC_DIR ${ep_dependency_DIR}/OpenCV CACHE INTERNAL "Path to store OpenCV contents.")
   SET (OpenCV_BIN_DIR ${ep_dependency_DIR}/OpenCV-bin CACHE INTERNAL "Path to store OpenCV contents.")
@@ -32,7 +38,7 @@ ELSE()
     BINARY_DIR "${OpenCV_BIN_DIR}"
     #--Download step--------------
     GIT_REPOSITORY https://github.com/Itseez/opencv.git
-    GIT_TAG 2.3.1
+    GIT_TAG 3.1.0
     #--Configure step-------------
     CMAKE_ARGS 
       ${ep_common_args}
@@ -40,6 +46,7 @@ ELSE()
       -DCMAKE_CXX_FLAGS=${opencv_common_cxx_flags}
       ${QT_ARG}
       -DWITH_CUDA:BOOL=OFF
+      ${OpenCV_VTK_ARGS}
       -DBUILD_TESTS:BOOL=OFF
     #--Install step-----------------
     INSTALL_COMMAND "" # Do not install
