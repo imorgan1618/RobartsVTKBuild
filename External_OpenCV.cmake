@@ -30,6 +30,12 @@ ELSE()
   ELSE()
     SET(opencv_common_cxx_flags ${ep_common_cxx_flags})
   ENDIF()
+  
+  IF( "${VTK_RENDERING_BACKEND}" STREQUAL "OpenGL" )
+    SET( OpenCV_VTK_ARGS -DWITH_VTK:BOOL=ON -DVTK_DIR:PATH=${RobartsVTK_VTK_DIR} )
+  ELSE()
+    SET( OpenCV_VTK_ARGS )
+  ENDIF()
 
   SET (OpenCV_SRC_DIR ${ep_dependency_DIR}/OpenCV CACHE INTERNAL "Path to store OpenCV contents.")
   SET (OpenCV_BIN_DIR ${ep_dependency_DIR}/OpenCV-bin CACHE INTERNAL "Path to store OpenCV contents.")
@@ -51,6 +57,7 @@ ELSE()
       -DVTK_DIR:PATH=${PLUS_VTK_DIR} 
       ${QT_ARG}
       ${EXTRA_OPENCV_ARGS}
+      ${OpenCV_VTK_ARGS}
     #--Install step-----------------
     INSTALL_COMMAND "" # Do not install
     DEPENDS
