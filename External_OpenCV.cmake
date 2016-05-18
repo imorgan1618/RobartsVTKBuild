@@ -1,9 +1,16 @@
 IF(OpenCV_DIR)
-  FIND_PACKAGE(OpenCV 2.3.1 REQUIRED NO_MODULE PATHS ${OpenCV_DIR})
+  FIND_PACKAGE(OpenCV 3.1.0 REQUIRED NO_MODULE PATHS ${OpenCV_DIR})
 
   MESSAGE(STATUS "Using OpenCV available at: ${OpenCV_DIR}")
 ELSE()
   MESSAGE(STATUS "Downloading and building OpenCV from: https://github.com/Itseez/opencv.git")
+  
+  SET(EXTRA_OPENCV_ARGS)
+  FIND_PACKAGE(CUDA 7.5 QUIET)
+  
+  IF( NOT CUDA_FOUND )
+    SET(EXTRA_OPENCV_ARGS -DWITH_CUDA:BOOL=OFF)
+  ENDIF()
 
   IF( QT4_FOUND OR Qt5_FOUND )
     SET(QT_ARG -DWITH_QT:BOOL=ON -DQT_QMAKE_EXECUTABLE=${QT_QMAKE_EXECUTABLE})
@@ -32,15 +39,18 @@ ELSE()
     BINARY_DIR "${OpenCV_BIN_DIR}"
     #--Download step--------------
     GIT_REPOSITORY https://github.com/Itseez/opencv.git
-    GIT_TAG 2.3.1
+    GIT_TAG 3.1.0
     #--Configure step-------------
     CMAKE_ARGS 
       ${ep_common_args}
       -DCMAKE_C_FLAGS=${ep_common_c_flags}
       -DCMAKE_CXX_FLAGS=${opencv_common_cxx_flags}
-      ${QT_ARG}
-      -DWITH_CUDA:BOOL=OFF
+      -DBUILD_SHARED_LIBS:BOOL=${PLUSBUILD_BUILD_SHARED_LIBS}
       -DBUILD_TESTS:BOOL=OFF
+      -DBUILD_DOCS:BOOL=OFF
+      -DVTK_DIR:PATH=${PLUS_VTK_DIR} 
+      ${QT_ARG}
+      ${EXTRA_OPENCV_ARGS}
     #--Install step-----------------
     INSTALL_COMMAND "" # Do not install
     DEPENDS
