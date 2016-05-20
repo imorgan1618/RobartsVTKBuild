@@ -5,6 +5,12 @@ IF(VTK_DIR)
   IF( NOT VTK_WRAP_PYTHON AND RobartsVTK_WRAP_PYTHON )
     MESSAGE(FATAL_ERROR "Python wrapping requested but VTK located at \"${VTK_DIR}\" was not built with python wrapping enabled.")
   ENDIF()
+  
+  IF( ${VTK_RENDERING_BACKEND} STREQUAL "OpenGL" )
+    MESSAGE(FATAL_ERROR "RobartsVTK requires OpenGL2 backend enabled in VTK build. The VTK at ${VTK_DIR} does not have this enabled.")
+    SET(VTK_DIR "VTK_DIR-NOTFOUND")
+    return()
+  ENDIF()
 
   MESSAGE(STATUS "Using VTK available at: ${VTK_DIR}")
   
@@ -12,8 +18,8 @@ IF(VTK_DIR)
 ELSE(VTK_DIR)
   # VTK has not been built yet, so download and build it as an external project
 
-  SET(VTK_GIT_REPOSITORY "github.com/Slicer/VTK.git")
-  SET(VTK_GIT_TAG "fe92273888219edca422f3a308761ddcd2882e2b")
+  SET(VTK_GIT_REPOSITORY "gitlab.kitware.com/vtk/vtk.git")
+  SET(VTK_GIT_TAG "master")
 
   MESSAGE(STATUS "Downloading and building VTK from: ${GIT_PROTOCOL}://${VTK_GIT_REPOSITORY}")
 
@@ -41,7 +47,7 @@ ELSE(VTK_DIR)
     SOURCE_DIR "${RobartsVTK_VTK_SRC_DIR}"
     BINARY_DIR "${RobartsVTK_VTK_DIR}"
     #--Download step--------------
-    GIT_REPOSITORY "${GIT_PROTOCOL}://${VTK_GIT_REPOSITORY}"
+    GIT_REPOSITORY "https://${VTK_GIT_REPOSITORY}"
     GIT_TAG ${VTK_GIT_TAG}
     #--Configure step-------------
     CMAKE_ARGS 
@@ -51,12 +57,13 @@ ELSE(VTK_DIR)
         -DBUILD_SHARED_LIBS:BOOL=ON 
         -DBUILD_TESTING:BOOL=OFF 
         -DBUILD_EXAMPLES:BOOL=OFF
+        -DVTK_RENDERING_BACKEND:STRING=OpenGL2
         -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
         -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
         -DVTK_QT_VERSION:STRING=${QT_VERSION_MAJOR}
         -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
         -DVTK_WRAP_PYTHON:BOOL=${RobartsVTK_WRAP_PYTHON}
-        -DVTK_SMP_IMPLEMENTATION_TYPE:STRING="OpenMP"
+        -DVTK_SMP_IMPLEMENTATION_TYPE:STRING=OpenMP
         -DCMAKE_PREFIX_PATH:STRING=${CMAKE_PREFIX_PATH}
     #--Build step-----------------
     #--Install step-----------------
