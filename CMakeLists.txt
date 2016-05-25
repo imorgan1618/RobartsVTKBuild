@@ -17,17 +17,21 @@ OPTION(RobartsVTK_USE_CUDA "Build the CUDA modules" OFF)
 IF (RobartsVTK_USE_CUDA)
   OPTION(RobartsVTK_USE_CUDA_VISUALIZATION "Build the CUDA visualization modules" ON)
 ENDIF()
+OPTION(RobartsVTK_USE_VISUALIZATION  "Build the visualization modules" ON)
 IF (RobartsVTK_USE_CUDA AND RobartsVTK_USE_COMMON)
   OPTION(RobartsVTK_USE_CUDA_ANALYTICS "Build the CUDA image analytics modules" ON)
 ENDIF()
 OPTION(RobartsVTK_BUILD_APPS "Build RobartsVTK applications." OFF)
 OPTION(RobartsVTK_WRAP_PYTHON "Wrap the RobartsVTK libs in Python." ON)
-OPTION(BUILD_SHARED_LIBS "Build shared libraries." OFF)
+OPTION(BUILD_SHARED_LIBS "Build shared libraries." ON)
 OPTION(BUILD_TESTING "Build testing." OFF)
 OPTION(BUILD_DOCUMENTATION "Build Documentation" OFF)
 IF( RobartsVTK_USE_QT )
   OPTION(RobartsVTK_USE_QT5_ONLY "Only search for Qt5." OFF)
 ENDIF()
+
+SET(RobartsVTK_VTK_VERSION 6.3.0 CACHE STRING "The requested version of VTK to use")
+set_property(CACHE RobartsVTK_VTK_VERSION PROPERTY STRINGS "6.3.0" "7.1.0")
 
 #-----------------------------------------------------------------------------
 # Preparatory setup
@@ -304,6 +308,16 @@ IF (RobartsVTK_USE_CUDA)
   SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DCUDA_TOOLKIT_ROOT_DIR:PATH=${CUDA_TOOLKIT_ROOT_DIR})
 ENDIF()
 
+IF(RobartsVTK_USE_VISUALIZATION)
+  FIND_PACKAGE(zlib QUIET)
+  IF(NOT ZLIB_FOUND)
+    INCLUDE(External_zlib.cmake)
+    SET(ZLIB_ROOT ${RobartsVTK_zlib_DIR}/install)
+  ENDIF()
+  INCLUDE(External_PNG.cmake)
+  
+  SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DCMAKE_PREFIX_PATH:PATH=${RobartsVTK_libpng_DIR}/install -DZLIB_ROOT:PATH=${ZLIB_ROOT})
+ENDIF()
 #-----------------------------------------------------------------------------
 # RobartsVTKLib download
 #-----------------------------------------------------------------------------
@@ -325,6 +339,7 @@ ENDIF()
       -DRobartsVTK_USE_COMMON:BOOL=${RobartsVTK_USE_COMMON} 
       -DRobartsVTK_USE_CUDA:BOOL=${RobartsVTK_USE_CUDA} 
       -DRobartsVTK_USE_CUDA_VISUALIZATION:BOOL=${RobartsVTK_USE_CUDA_VISUALIZATION} 
+      -DRobartsVTK_USE_VISUALIZATION:BOOL=${RobartsVTK_USE_VISUALIZATION} 
       -DRobartsVTK_USE_CUDA_ANALYTICS:BOOL=${RobartsVTK_USE_CUDA_ANALYTICS} 
       -DRobartsVTK_USE_QT5_ONLY:BOOL=${RobartsVTK_USE_QT5_ONLY}
       -DRobartsVTK_BUILD_APPS:BOOL=${RobartsVTK_BUILD_APPS} 

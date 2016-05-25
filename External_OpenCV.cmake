@@ -10,10 +10,15 @@ ELSE()
   
   IF( NOT CUDA_FOUND )
     SET(EXTRA_OPENCV_ARGS -DWITH_CUDA:BOOL=OFF)
+  ELSE()
+    SET(EXTRA_OPENCV_ARGS -DWITH_CUDA:BOOL=ON)
   ENDIF()
 
-  IF( QT4_FOUND OR Qt5_FOUND )
-    SET(QT_ARG -DWITH_QT:BOOL=ON -DQT_QMAKE_EXECUTABLE=${QT_QMAKE_EXECUTABLE})
+  IF( QT4_FOUND )
+    SET(QT_ARG -DWITH_QT:BOOL=ON -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE})
+  ELSEIF( Qt5_FOUND )
+    GET_FILENAME_COMPONENT(Qt5_PREFIX_PATH ${Qt5_DIR} DIRECTORY)
+    SET(QT_ARG -DWITH_QT:BOOL=ON -DQt5_DIR:PATH=${Qt5_DIR} -DCMAKE_PREFIX_PATH:PATH=${Qt5_PREFIX_PATH})
   ELSE()
     SET(QT_ARG -DWITH_QT:BOOL=OFF)
   ENDIF()
@@ -30,12 +35,6 @@ ELSE()
   ELSE()
     SET(opencv_common_cxx_flags ${ep_common_cxx_flags})
   ENDIF()
-  
-  IF( "${VTK_RENDERING_BACKEND}" STREQUAL "OpenGL" )
-    SET( OpenCV_VTK_ARGS -DWITH_VTK:BOOL=ON -DVTK_DIR:PATH=${RobartsVTK_VTK_DIR} )
-  ELSE()
-    SET( OpenCV_VTK_ARGS )
-  ENDIF()
 
   SET (OpenCV_SRC_DIR ${ep_dependency_DIR}/OpenCV CACHE INTERNAL "Path to store OpenCV contents.")
   SET (OpenCV_BIN_DIR ${ep_dependency_DIR}/OpenCV-bin CACHE INTERNAL "Path to store OpenCV contents.")
@@ -51,13 +50,12 @@ ELSE()
       ${ep_common_args}
       -DCMAKE_C_FLAGS=${ep_common_c_flags}
       -DCMAKE_CXX_FLAGS=${opencv_common_cxx_flags}
-      -DBUILD_SHARED_LIBS:BOOL=${PLUSBUILD_BUILD_SHARED_LIBS}
+      -DBUILD_SHARED_LIBS:BOOL=ON
       -DBUILD_TESTS:BOOL=OFF
       -DBUILD_DOCS:BOOL=OFF
       -DVTK_DIR:PATH=${PLUS_VTK_DIR} 
       ${QT_ARG}
       ${EXTRA_OPENCV_ARGS}
-      ${OpenCV_VTK_ARGS}
     #--Install step-----------------
     INSTALL_COMMAND "" # Do not install
     DEPENDS
