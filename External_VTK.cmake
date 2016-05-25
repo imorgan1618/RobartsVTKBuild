@@ -22,7 +22,7 @@ ELSE(VTK_DIR)
     SET(VTK_GIT_REPOSITORY "github.com/Slicer/VTK.git")
     SET(VTK_GIT_TAG "fe92273888219edca422f3a308761ddcd2882e2b")
     SET(VTK_GIT_PROTOCOL ${GIT_PROTOCOL})
-  ELSE
+  ELSE()
     SET(VTK_GIT_REPOSITORY "gitlab.kitware.com/vtk/vtk.git")
     SET(VTK_GIT_TAG "master")
     SET(VTK_GIT_PROTOCOL "https")
