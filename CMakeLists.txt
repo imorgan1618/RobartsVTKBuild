@@ -30,6 +30,9 @@ IF( RobartsVTK_USE_QT )
   OPTION(RobartsVTK_USE_QT5_ONLY "Only search for Qt5." OFF)
 ENDIF()
 
+SET(RobartsVTK_VTK_VERSION 6.3.0 CACHE STRING "The requested version of VTK to use")
+set_property(CACHE RobartsVTK_VTK_VERSION PROPERTY STRINGS "6.3.0" "7.1.0")
+
 #-----------------------------------------------------------------------------
 # Preparatory setup
 #-----------------------------------------------------------------------------
