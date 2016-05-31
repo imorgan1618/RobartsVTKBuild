@@ -13,6 +13,7 @@ ELSE()
     GET_FILENAME_COMPONENT(COMPILER_DIR ${COMPILER_VC_DIR} DIRECTORY)
     SET(FFTW_URL "${CMAKE_SOURCE_DIR}/Libs/fftw-3.3.4-dll64.tar.gz")
     SET(FFTW_CONFIGURE_COMMAND "$ENV{comspec} /k \"\"${COMPILER_DIR}/vcvarsall.bat\"\" amd64")
+    # TODO figure out how to run the lib command from visual studio prompt
     message(${FFTW_CONFIGURE_COMMAND})
   ELSEIF(MSVC AND NOT ${CMAKE_GENERATOR} MATCHES "Win64" )
     SET(FFTW_URL "${CMAKE_SOURCE_DIR}/Libs/fftw-3.3.4-dll32.tar.gz")
