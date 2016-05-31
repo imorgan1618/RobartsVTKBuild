@@ -315,6 +315,9 @@ IF(RobartsVTK_USE_VISUALIZATION)
     SET(ZLIB_ROOT ${RobartsVTK_zlib_DIR}/install)
   ENDIF()
   INCLUDE(External_PNG.cmake)
+  INCLUDE(External_FFTW.cmake)
+  
+  LIST(APPEND RobartsVTKLib_DEPENDENCIES FFTW libpng zlib)
   
   SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DCMAKE_PREFIX_PATH:PATH=${RobartsVTK_libpng_DIR}/install -DZLIB_ROOT:PATH=${ZLIB_ROOT})
 ENDIF()
