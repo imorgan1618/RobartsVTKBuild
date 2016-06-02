@@ -25,10 +25,8 @@ ELSE(PNG_DIR)
     #--Configure step-------------
     CMAKE_ARGS 
         ${ep_common_args}
+        -DCMAKE_INSTALL_PREFIX:PATH=${RobartsVTK_PNG_DIR}/install
         -DZLIB_ROOT:PATH=${ZLIB_ROOT}
-    #--Build step-----------------
-    #--Install step-----------------
-    INSTALL_COMMAND ""
     DEPENDS ${libpng_DEPENDENCIES}
     )
 

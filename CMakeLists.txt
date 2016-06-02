@@ -319,7 +319,8 @@ IF(RobartsVTK_USE_VISUALIZATION)
   
   LIST(APPEND RobartsVTKLib_DEPENDENCIES FFTW libpng zlib)
   
-  SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DCMAKE_PREFIX_PATH:PATH=${RobartsVTK_libpng_DIR}/install -DZLIB_ROOT:PATH=${ZLIB_ROOT})
+  SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${RobartsVTK_libpng_DIR}/install)
+  SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DZLIB_ROOT:PATH=${ZLIB_ROOT} -DFFTW_ROOT_DIR:PATH=${FFTW_ROOT_DIR} -DPNG_CMAKE_FILE:FILEPATH=${RobartsVTK_libpng_DIR}/install/lib/libpng/libpng16.cmake)
 ENDIF()
 #-----------------------------------------------------------------------------
 # RobartsVTKLib download
@@ -352,6 +353,7 @@ ENDIF()
       -DBUILD_DOCUMENTATION:BOOL=${BUILD_DOCUMENTATION} 
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
+      -DRobartsVTK_VTK_VERSION:STRING=${RobartsVTK_VTK_VERSION}
       ${RobartsVTKLib_PROJECT_ARGS}
     #--Build step-----------------
     #--Install step-----------------
