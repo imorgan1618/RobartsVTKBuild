@@ -17,6 +17,7 @@ OPTION(RobartsVTK_USE_CUDA "Build the CUDA modules" OFF)
 IF (RobartsVTK_USE_CUDA)
   OPTION(RobartsVTK_USE_CUDA_VISUALIZATION "Build the CUDA visualization modules" ON)
 ENDIF()
+OPTION(RobartsVTK_USE_OpenCL "Build the OpenCL modules" OFF)
 OPTION(RobartsVTK_USE_VISUALIZATION  "Build the visualization modules" ON)
 IF (RobartsVTK_USE_CUDA AND RobartsVTK_USE_COMMON)
   OPTION(RobartsVTK_USE_CUDA_ANALYTICS "Build the CUDA image analytics modules" ON)
@@ -322,6 +323,12 @@ IF(RobartsVTK_USE_VISUALIZATION)
   SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${RobartsVTK_libpng_DIR}/install)
   SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DZLIB_ROOT:PATH=${ZLIB_ROOT} -DFFTW_ROOT_DIR:PATH=${FFTW_ROOT_DIR} -DPNG_CMAKE_FILE:FILEPATH=${RobartsVTK_libpng_DIR}/install/lib/libpng/libpng16.cmake)
 ENDIF()
+
+IF (RobartsVTK_USE_OpenCL)
+  FIND_PACKAGE(OpenCL REQUIRED)
+  OPTION(RobartsVTK_USE_CL_VOLUMERECONSTRUCTION "Build the OpenCL Volume Reconstruction modules" ON)
+ENDIF()
+
 #-----------------------------------------------------------------------------
 # RobartsVTKLib download
 #-----------------------------------------------------------------------------
@@ -344,6 +351,8 @@ ENDIF()
       -DRobartsVTK_USE_CUDA:BOOL=${RobartsVTK_USE_CUDA} 
       -DRobartsVTK_USE_CUDA_VISUALIZATION:BOOL=${RobartsVTK_USE_CUDA_VISUALIZATION} 
       -DRobartsVTK_USE_VISUALIZATION:BOOL=${RobartsVTK_USE_VISUALIZATION} 
+      -DRobartsVTK_USE_OpenCL:BOOL=${RobartsVTK_USE_OpenCL}
+      -DRobartsVTK_USE_CL_VOLUMERECONSTRUCTION:BOOL=${RobartsVTK_USE_CL_VOLUMERECONSTRUCTION}
       -DRobartsVTK_USE_CUDA_ANALYTICS:BOOL=${RobartsVTK_USE_CUDA_ANALYTICS} 
       -DRobartsVTK_USE_QT5_ONLY:BOOL=${RobartsVTK_USE_QT5_ONLY}
       -DRobartsVTK_BUILD_APPS:BOOL=${RobartsVTK_BUILD_APPS} 
