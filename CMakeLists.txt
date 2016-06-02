@@ -4,6 +4,11 @@ PROJECT(RobartsVTKSuperBuild)
 CMAKE_MINIMUM_REQUIRED(VERSION 3.2)
 cmake_policy(SET CMP0003 NEW)
 
+IF(WIN32)
+  SET(PKG_CONFIG_EXECUTABLE ${CMAKE_SOURCE_DIR}/Libs/pkg-config/pkg-config.exe)
+ENDIF()
+find_package(PkgConfig QUIET)
+
 SET(RobartsVTKLib_PROJECT_ARGS)
 SET(RobartsVTKLib_DEPENDENCIES)
 
@@ -310,11 +315,18 @@ IF (RobartsVTK_USE_CUDA)
 ENDIF()
 
 IF(RobartsVTK_USE_VISUALIZATION)
-  FIND_PACKAGE(zlib QUIET)
+  IF(PkgConfig_FOUND)
+    pkg_check_modules(ZLIB zlib QUIET)
+  ELSE()
+    FIND_PACKAGE(zlib QUIET)
+  ENDIF()
+
   IF(NOT ZLIB_FOUND)
     INCLUDE(External_zlib.cmake)
     SET(ZLIB_ROOT ${RobartsVTK_zlib_DIR}/install)
   ENDIF()
+  SET(libpng_DEPENDENCIES zlib)
+  
   INCLUDE(External_PNG.cmake)
   INCLUDE(External_FFTW.cmake)
   
