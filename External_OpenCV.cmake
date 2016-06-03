@@ -27,6 +27,12 @@ ELSE()
     SET(ep_common_cxx_flags "${ep_common_cxx_flags} /D_VARIADIC_MAX=10")
   ENDIF()
 
+  IF(UNIX AND NOT APPLE)
+    # Remove c++11 for opencv 3.1.0 on linux as it causes build issues
+    SET(opencv_common_cxx_flags ${ep_common_cxx_flags})
+    STRING(REPLACE "-std=c++11" "" opencv_common_cxx_flags ${opencv_common_cxx_flags})
+  ENDIF()
+
   SET (OpenCV_SRC_DIR ${ep_dependency_DIR}/OpenCV CACHE INTERNAL "Path to store OpenCV contents.")
   SET (OpenCV_BIN_DIR ${ep_dependency_DIR}/OpenCV-bin CACHE INTERNAL "Path to store OpenCV contents.")
   ExternalProject_Add(OpenCV
@@ -40,7 +46,7 @@ ELSE()
     CMAKE_ARGS 
       ${ep_common_args}
       -DCMAKE_C_FLAGS=${ep_common_c_flags}
-      -DCMAKE_CXX_FLAGS=${ep_common_cxx_flags}
+      -DCMAKE_CXX_FLAGS=${opencv_common_cxx_flags}
       -DBUILD_SHARED_LIBS:BOOL=ON
       -DBUILD_TESTS:BOOL=OFF
       -DBUILD_DOCS:BOOL=OFF

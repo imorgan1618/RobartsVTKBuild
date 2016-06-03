@@ -8,9 +8,11 @@ IF(fftw_ROOT_DIR)
 ELSE()
   SET (RobartsVTK_FFTW_DIR "${ep_dependency_DIR}/FFTW-bin" CACHE INTERNAL "Path to store FFTW binaries")
 
-  SET(FFTW_CONFIGURE_COMMAND "")
   # FFTW has not been built yet, so download and build it as an external project
   IF(MSVC)
+    SET(FFTW_BUILD_COMMAND "")
+    SET(FFTW_INSTALL_COMMAND "")
+
     # Extract VS version for use in script
     STRING(REGEX REPLACE "Visual Studio ([0-9]*) .*" "\\1" VS_IDE_VERSION ${CMAKE_GENERATOR})
 
@@ -31,6 +33,9 @@ ELSE()
       SET(FFTW_CONFIGURE_COMMAND ${CMAKE_SOURCE_DIR}/Libs/FFTW/msvc_lib_generation.bat "${VS_ROOT_DIR}/VC/vcvarsall.bat" x86 ${RobartsVTK_FFTW_DIR})
     ENDIF()
   ELSE()
+    SET(FFTW_CONFIGURE_COMMAND ${RobartsVTK_FFTW_DIR}/configure --prefix=${RobartsVTK_FFTW_DIR})
+    SET(FFTW_BUILD_COMMAND make -j 4)
+    SET(FFTW_INSTALL_COMMAND make install)
     SET(FFTW_URL "${CMAKE_SOURCE_DIR}/Libs/FFTW/fftw-3.3.4.tar.gz")
   ENDIF()
 
@@ -39,15 +44,16 @@ ELSE()
   ExternalProject_Add( FFTW
     PREFIX "${ep_dependency_DIR}/FFTW-prefix"
     SOURCE_DIR ${RobartsVTK_FFTW_DIR}
+    BINARY_DIR ${RobartsVTK_FFTW_DIR}
     DOWNLOAD_DIR ${ep_dependency_DIR}/FFTW-download
     #--Download step--------------
     URL ${FFTW_URL}
     #--Configure step-------------
     CONFIGURE_COMMAND "${FFTW_CONFIGURE_COMMAND}"
     #--Build step-----------------
-    BUILD_COMMAND ""
+    BUILD_COMMAND "${FFTW_BUILD_COMMAND}"
     #--Install step-----------------
-    INSTALL_COMMAND ""
+    INSTALL_COMMAND "${FFTW_INSTALL_COMMAND}"
     )
 
 ENDIF()
