@@ -2,6 +2,8 @@ IF(OpenCV_DIR)
   FIND_PACKAGE(OpenCV 3.1.0 REQUIRED NO_MODULE PATHS ${OpenCV_DIR})
 
   MESSAGE(STATUS "Using OpenCV available at: ${OpenCV_DIR}")
+  
+  SET(RobartsVTK_OpenCV_DIR ${OpenCV_DIR} CACHE Internal "Path to OpenCV contents.")
 ELSE()
   MESSAGE(STATUS "Downloading and building OpenCV from: https://github.com/Itseez/opencv.git")
   
@@ -27,18 +29,18 @@ ELSE()
     SET(ep_common_cxx_flags "${ep_common_cxx_flags} /D_VARIADIC_MAX=10")
   ENDIF()
 
+  SET(opencv_common_cxx_flags ${ep_common_cxx_flags})
   IF(UNIX AND NOT APPLE)
     # Remove c++11 for opencv 3.1.0 on linux as it causes build issues
-    SET(opencv_common_cxx_flags ${ep_common_cxx_flags})
     STRING(REPLACE "-std=c++11" "" opencv_common_cxx_flags ${opencv_common_cxx_flags})
   ENDIF()
 
-  SET (OpenCV_SRC_DIR ${ep_dependency_DIR}/OpenCV CACHE INTERNAL "Path to store OpenCV contents.")
-  SET (OpenCV_BIN_DIR ${ep_dependency_DIR}/OpenCV-bin CACHE INTERNAL "Path to store OpenCV contents.")
+  SET (RobartsVTK_OpenCV_SRC_DIR ${ep_dependency_DIR}/OpenCV CACHE INTERNAL "Path to store OpenCV contents.")
+  SET (RobartsVTK_OpenCV_DIR ${ep_dependency_DIR}/OpenCV-bin CACHE INTERNAL "Path to store OpenCV contents.")
   ExternalProject_Add(OpenCV
     PREFIX "${ep_dependency_DIR}/OpenCV-prefix"
-    SOURCE_DIR "${OpenCV_SRC_DIR}"
-    BINARY_DIR "${OpenCV_BIN_DIR}"
+    SOURCE_DIR "${RobartsVTK_OpenCV_SRC_DIR}"
+    BINARY_DIR "${RobartsVTK_OpenCV_DIR}"
     #--Download step--------------
     GIT_REPOSITORY https://github.com/Itseez/opencv.git
     GIT_TAG 3.1.0

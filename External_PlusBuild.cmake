@@ -26,6 +26,7 @@ ELSE()
       ${ep_common_args}
       -DVTK_DIR:PATH=${VTK_DIR}
       -DITK_DIR:PATH=${ITK_DIR}
+      -DOpenCV_DIR:PATH=${RobartsVTK_OpenCV_DIR}
       -DBUILD_TESTING:BOOL=OFF
       -DPLUSBUILD_DOWNLOAD_PlusDATA:BOOL=OFF 
       -DBUILD_SHARED_LIBS:BOOL=ON
