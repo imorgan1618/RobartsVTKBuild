@@ -53,6 +53,9 @@ ELSE()
       -DBUILD_TESTS:BOOL=OFF
       -DBUILD_DOCS:BOOL=OFF
       -DVTK_DIR:PATH=${PLUS_VTK_DIR} 
+      -DWITH_OPENGL:BOOL=ON
+      -DWITH_VFW:BOOL=OFF
+      -DWITH_MSMF:BOOL=ON
       ${QT_ARG}
       ${EXTRA_OPENCV_ARGS}
     #--Install step-----------------
