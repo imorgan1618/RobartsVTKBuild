@@ -1,7 +1,12 @@
-IF(PlusLib_DIR)
+IF(PlusLib_DIR OR PlusApp_DIR)
   FIND_PACKAGE(PlusLib REQUIRED NO_MODULE PATHS ${PlusLib_DIR} PATH_SUFFIX src)
+  FIND_PACKAGE(PlusApp REQUIRED NO_MODULE PATHS ${PlusApp_DIR})
 
   MESSAGE(STATUS "Using PlusLib available at: ${PlusLib_DIR}")
+  MESSAGE(STATUS "Using PlusApp available at: ${PlusApp_DIR}")
+  
+  SET(RobartsVTK_PlusLib_BIN_DIR ${PlusLib_DIR})
+  SET(RobartsVTK_PlusApp_BIN_DIR ${PlusApp_DIR})
 ELSE()
   MESSAGE(STATUS "Downloading and building Plus from: https://subversion.assembla.com/svn/plus/trunk/PlusBuild")
 
@@ -30,7 +35,7 @@ ELSE()
       -DBUILD_TESTING:BOOL=OFF
       -DPLUSBUILD_DOWNLOAD_PlusDATA:BOOL=OFF 
       -DBUILD_SHARED_LIBS:BOOL=ON
-      -DPLUSBUILD_BUILD_PLUSAPP:BOOL=${RobartsVTK_USE_PLUSAPP}
+      -DPLUSBUILD_BUILD_PLUSAPP:BOOL=${RobartsVTK_BUILD_APPS}
       -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
       -DQt5_DIR:PATH=${Qt5_DIR}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
@@ -67,4 +72,7 @@ ELSE()
     INSTALL_COMMAND "" # Do not install
     DEPENDS ${Plus_DEPENDENCIES}
     )
+    
+  SET(RobartsVTK_PlusLib_BIN_DIR ${PLUS_BIN_DIR}/PlusLib-bin)
+  SET(RobartsVTK_PlusApp_BIN_DIR ${PLUS_BIN_DIR}/PlusApp-bin)
 ENDIF()

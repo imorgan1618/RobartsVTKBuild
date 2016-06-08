@@ -172,7 +172,7 @@ IF(RobartsVTK_USE_QT)
     FIND_PACKAGE(Qt5 QUIET COMPONENTS Widgets NO_MODULE)
 
     IF ( NOT Qt5_FOUND )
-      MESSAGE( FATAL_ERROR "This project requires Qt4 or Qt5 for building PlusApp. These components are missing. Please verify configuration by selecting QT_QMAKE_EXECUTABLE (Qt4) or Qt5_DIR (Qt5) or turn off RobartsVTK_USE_QT option.")
+      MESSAGE( FATAL_ERROR "This project requires Qt4 or Qt5 for building RobartsVTK. These components are missing. Please verify configuration by selecting QT_QMAKE_EXECUTABLE (Qt4) or Qt5_DIR (Qt5) or turn off RobartsVTK_USE_QT option.")
     ENDIF()
 
     IF(UNIX AND "${Qt5_DIR}" MATCHES "cmake")
@@ -273,27 +273,23 @@ ENDIF()
 # PLUS
 #-----------------------------------------------------------------------------
 IF(RobartsVTK_USE_PLUS)
-  IF(RobartsVTK_BUILD_APPS)
-    SET(RobartsVTK_USE_PLUSAPP ON)
-  ELSE()
-    SET(RobartsVTK_USE_PLUSAPP OFF)
-  ENDIF()
-
   INCLUDE(External_PlusBuild.cmake)
-  
-  IF( PlusLib_DIR )
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DPlusLib_DIR:PATH=${PlusLib_DIR})
+
+  SET(RobartsVTK_PlusLib_BIN_DIR ${PLUS_BIN_DIR}/PlusLib-bin)
+  SET(RobartsVTK_PlusApp_BIN_DIR ${PLUS_BIN_DIR}/PlusApp-bin)
+
+  SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DPlusLib_DIR:PATH=${RobartsVTK_PlusLib_BIN_DIR})
+  SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DPlusApp_DIR:PATH=${RobartsVTK_PlusApp_BIN_DIR})
+
+  IF(PlusLib_DIR)
     SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} PlusLib)
   ELSE()
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DPlusLib_DIR:PATH=${PLUS_BIN_DIR}/PlusLib-bin/src)
     SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} Plus)
   ENDIF()
   
   IF( PlusApp_DIR )
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DPlusApp_DIR:PATH=${PlusApp_DIR})
     SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} PlusApp)
   ELSE()
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DPlusApp_DIR:PATH=${PLUS_BIN_DIR}/PlusApp-bin/src)
     SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} Plus)
   ENDIF()
 ENDIF()
