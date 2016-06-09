@@ -287,7 +287,7 @@ IF(RobartsVTK_BUILD_APPS)
     SET(Plus_DEPENDENCIES ${Plus_DEPENDENCIES} OpenCV)
     IF( OpenCV_DIR )
       SET(OpenCV_Dependency_Arg -DOpenCV_DIR:PATH=${OpenCV_DIR})
-    ELSE
+    ELSE()
       SET(OpenCV_Dependency_Arg -DOpenCV_DIR:PATH=${RobartsVTK_OpenCV_DIR})
     ENDIF()
   ENDIF()
