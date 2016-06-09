@@ -270,6 +270,30 @@ IF(RobartsVTK_USE_ITK)
 ENDIF()
 
 #-----------------------------------------------------------------------------
+# OpenCV
+#-----------------------------------------------------------------------------
+IF(RobartsVTK_BUILD_APPS)
+  INCLUDE(External_OpenCV.cmake)
+  
+  IF( OpenCV_DIR )
+    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DOpenCV_DIR:PATH=${OpenCV_DIR})
+  ELSE()
+    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DOpenCV_DIR:PATH=${RobartsVTK_OpenCV_DIR})
+  ENDIF()
+
+  SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} OpenCV)
+  
+  IF(RobartsVTK_USE_PLUS)
+    SET(Plus_DEPENDENCIES ${Plus_DEPENDENCIES} OpenCV)
+    IF( OpenCV_DIR )
+      SET(OpenCV_Dependency_Arg -DOpenCV_DIR:PATH=${OpenCV_DIR})
+    ELSE
+      SET(OpenCV_Dependency_Arg -DOpenCV_DIR:PATH=${RobartsVTK_OpenCV_DIR})
+    ENDIF()
+  ENDIF()
+ENDIF()
+
+#-----------------------------------------------------------------------------
 # PLUS
 #-----------------------------------------------------------------------------
 IF(RobartsVTK_USE_PLUS)
@@ -298,21 +322,6 @@ IF (RobartsVTK_USE_CUDA)
   FIND_PACKAGE(CUDA REQUIRED)
 
   SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DCUDA_TOOLKIT_ROOT_DIR:PATH=${CUDA_TOOLKIT_ROOT_DIR})
-ENDIF()
-
-#-----------------------------------------------------------------------------
-# OpenCV
-#-----------------------------------------------------------------------------
-IF(RobartsVTK_BUILD_APPS)
-  INCLUDE(External_OpenCV.cmake)
-  
-  IF( OpenCV_DIR )
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DOpenCV_DIR:PATH=${OpenCV_DIR})
-  ELSE()
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DOpenCV_DIR:PATH=${RobartsVTK_OpenCV_DIR})
-  ENDIF()
-
-  SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} OpenCV)
 ENDIF()
 
 #-----------------------------------------------------------------------------
