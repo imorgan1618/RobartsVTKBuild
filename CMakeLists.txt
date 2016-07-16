@@ -36,8 +36,8 @@ IF( RobartsVTK_USE_QT )
   OPTION(RobartsVTK_USE_QT5_ONLY "Only search for Qt5." OFF)
 ENDIF()
 
-SET(RobartsVTK_VTK_VERSION 6.3.0 CACHE STRING "The requested version of VTK to use")
-set_property(CACHE RobartsVTK_VTK_VERSION PROPERTY STRINGS "6.3.0" "7.1.0")
+SET(RobartsVTK_VTK_VERSION 7.0.0 CACHE STRING "The requested version of VTK to use")
+set_property(CACHE RobartsVTK_VTK_VERSION PROPERTY STRINGS "6.3.0" "7.0.0" "7.1.0")
 
 #-----------------------------------------------------------------------------
 # Preparatory setup
@@ -244,7 +244,6 @@ IF( VTK_DIR )
 ELSE()
   IF( RobartsVTK_USE_PLUS )
     SET(Plus_DEPENDENCIES ${Plus_DEPENDENCIES} vtk)
-    SET(VTK_DIR ${RobartsVTK_VTK_DIR}) # to send to PLUS
   ENDIF()
   SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} vtk)
   SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DVTK_DIR:PATH=${RobartsVTK_VTK_DIR})
@@ -261,7 +260,6 @@ IF(RobartsVTK_USE_ITK)
   ELSE()
     IF( RobartsVTK_USE_PLUS )
       SET(Plus_DEPENDENCIES ${Plus_DEPENDENCIES} itk)
-      SET(ITK_DIR ${RobartsVTK_ITK_DIR}) # to send to PLUS
     ENDIF()
 
     SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DITK_DIR:PATH=${RobartsVTK_ITK_DIR})

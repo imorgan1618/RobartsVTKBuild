@@ -29,8 +29,8 @@ ELSE()
     #--Configure step-------------
     CMAKE_ARGS 
       ${ep_common_args}
-      -DVTK_DIR:PATH=${VTK_DIR}
-      -DITK_DIR:PATH=${ITK_DIR}
+      -DVTK_DIR:PATH=${RobartsVTK_VTK_DIR}
+      -DITK_DIR:PATH=${RobartsVTK_ITK_DIR}
       ${OpenCV_Dependency_Arg}
       -DBUILD_TESTING:BOOL=OFF
       -DPLUSBUILD_DOWNLOAD_PlusDATA:BOOL=OFF 

@@ -17,11 +17,14 @@ IF(VTK_DIR)
   SET(RobartsVTK_VTK_DIR ${VTK_DIR})
 ELSE(VTK_DIR)
   # VTK has not been built yet, so download and build it as an external project
-
   IF(${RobartsVTK_VTK_VERSION} VERSION_EQUAL "6.3.0")
     SET(VTK_GIT_REPOSITORY "github.com/Slicer/VTK.git")
     SET(VTK_GIT_TAG "fe92273888219edca422f3a308761ddcd2882e2b")
     SET(VTK_GIT_PROTOCOL ${GIT_PROTOCOL})
+  ELSEIF(${RobartsVTK_VTK_VERSION} VERSION_EQUAL "7.0.0")
+    SET(VTK_GIT_REPOSITORY "gitlab.kitware.com/vtk/vtk.git")
+    SET(VTK_GIT_TAG "v7.0.0")
+    SET(VTK_GIT_PROTOCOL "https")
   ELSE()
     SET(VTK_GIT_REPOSITORY "gitlab.kitware.com/vtk/vtk.git")
     SET(VTK_GIT_TAG "master")
@@ -70,6 +73,7 @@ ELSE(VTK_DIR)
         -DBUILD_SHARED_LIBS:BOOL=ON 
         -DBUILD_TESTING:BOOL=OFF 
         -DBUILD_EXAMPLES:BOOL=OFF
+        -DCMAKE_CXX_MP_FLAG:BOOL=ON
         -DVTK_RENDERING_BACKEND:STRING=OpenGL2
         -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
         -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
