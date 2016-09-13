@@ -8,12 +8,12 @@ ELSE()
   MESSAGE(STATUS "Downloading and building OpenCV from: https://github.com/Itseez/opencv.git")
   
   SET(EXTRA_OPENCV_ARGS)
-  FIND_PACKAGE(CUDA 7.5 QUIET)
+  FIND_PACKAGE(CUDA QUIET)
   
   IF( NOT CUDA_FOUND )
-    SET(EXTRA_OPENCV_ARGS -DWITH_CUDA:BOOL=OFF)
+    LIST(APPEND EXTRA_OPENCV_ARGS -DWITH_CUDA:BOOL=OFF)
   ELSE()
-    SET(EXTRA_OPENCV_ARGS -DWITH_CUDA:BOOL=ON)
+    LIST(APPEND EXTRA_OPENCV_ARGS -DWITH_CUDA:BOOL=ON -DBUILD_opencv_cudalegacy:BOOL=OFF)
   ENDIF()
 
   IF( QT4_FOUND )
@@ -43,7 +43,7 @@ ELSE()
     BINARY_DIR "${RobartsVTK_OpenCV_DIR}"
     #--Download step--------------
     GIT_REPOSITORY https://github.com/Itseez/opencv.git
-    GIT_TAG 3.1.0
+    GIT_TAG b632f95f8dd869258e50a3b8a2f3c4af9c26ad2d
     #--Configure step-------------
     CMAKE_ARGS 
       ${ep_common_args}
@@ -52,8 +52,7 @@ ELSE()
       -DBUILD_SHARED_LIBS:BOOL=ON
       -DBUILD_TESTS:BOOL=OFF
       -DBUILD_DOCS:BOOL=OFF
-      -DVTK_DIR:PATH=${PLUS_VTK_DIR} 
-      -DCUDA_GENERATION:STRING=Kepler
+      -DVTK_DIR:PATH=${RobartsVTK_VTK_DIR} 
       -DWITH_OPENGL:BOOL=ON
       -DWITH_VFW:BOOL=OFF
       -DWITH_MSMF:BOOL=ON
@@ -61,6 +60,6 @@ ELSE()
       ${EXTRA_OPENCV_ARGS}
     #--Install step-----------------
     INSTALL_COMMAND "" # Do not install
-    DEPENDS
+    DEPENDS vtk
     )
 ENDIF()

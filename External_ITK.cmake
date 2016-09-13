@@ -10,7 +10,7 @@ IF(ITK_DIR)
 ELSE(ITK_DIR)
   # ITK has not been built yet, so download and build it as an external project
   SET (ITKv4_REPOSITORY ${GIT_PROTOCOL}://itk.org/ITK.git)
-  SET (ITKv4_GIT_TAG v4.9.0) # 4.9 supports -std=c++11
+  SET (ITKv4_GIT_TAG v4.10.0)
   
   MESSAGE(STATUS "Downloading and building ITK from: ${GIT_PROTOCOL}://itk.org/ITK.git")
 

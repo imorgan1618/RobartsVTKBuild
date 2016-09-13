@@ -15,7 +15,7 @@ IF(VTK_DIR)
   MESSAGE(STATUS "Using VTK available at: ${VTK_DIR}")
   
   SET(RobartsVTK_VTK_DIR ${VTK_DIR})
-ELSE(VTK_DIR)
+ELSE()
   # VTK has not been built yet, so download and build it as an external project
   IF(${RobartsVTK_VTK_VERSION} VERSION_EQUAL "6.3.0")
     SET(VTK_GIT_REPOSITORY "github.com/Slicer/VTK.git")
@@ -41,7 +41,7 @@ ELSE(VTK_DIR)
       GET_FILENAME_COMPONENT(qt5_prefix ${Qt5_DIR} DIRECTORY)
       SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${qt5_prefix})
     ENDIF()
-  ENDIF( RobartsVTK_USE_QT )
+  ENDIF()
 
   SET(VTK_VERSION_SPECIFIC_ARGS ${VTK_VERSION_SPECIFIC_ARGS}
     -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:STRING=${RobartsVTK_EXECUTABLE_OUTPUT_PATH}
@@ -54,7 +54,7 @@ ELSE(VTK_DIR)
       -DVTK_USE_COCOA:BOOL=ON # Default to Cocoa, VTK/CMakeLists.txt will enable Carbon and disable cocoa if needed
       -DVTK_USE_X:BOOL=OFF
       )
-  ENDIF(APPLE)
+  ENDIF()
 
   SET (RobartsVTK_VTK_SRC_DIR "${ep_dependency_DIR}/vtk")
   SET (RobartsVTK_VTK_DIR "${ep_dependency_DIR}/vtk-bin" CACHE INTERNAL "Path to store vtk binaries")
@@ -88,4 +88,4 @@ ELSE(VTK_DIR)
     DEPENDS ${VTK_DEPENDENCIES}
     )
 
-ENDIF(VTK_DIR)
+ENDIF()
