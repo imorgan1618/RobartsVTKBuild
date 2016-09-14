@@ -32,12 +32,6 @@ OPTION(RobartsVTK_WRAP_PYTHON "Wrap the RobartsVTK libs in Python." ON)
 OPTION(BUILD_SHARED_LIBS "Build shared libraries." ON)
 OPTION(BUILD_TESTING "Build testing." OFF)
 OPTION(BUILD_DOCUMENTATION "Build Documentation" OFF)
-IF( RobartsVTK_USE_QT )
-  OPTION(RobartsVTK_USE_QT5_ONLY "Only search for Qt5." OFF)
-ENDIF()
-
-SET(RobartsVTK_VTK_VERSION 7.0.0 CACHE STRING "The requested version of VTK to use")
-set_property(CACHE RobartsVTK_VTK_VERSION PROPERTY STRINGS "6.3.0" "7.0.0" "7.1.0")
 
 #-----------------------------------------------------------------------------
 # Preparatory setup
@@ -63,36 +57,6 @@ FIND_PACKAGE(Subversion REQUIRED)
 #-----------------------------------------------------------------------------
 SET(PLUS_ASSEMBLA_USERNAME "perklab_anonymous" )
 SET(PLUS_ASSEMBLA_PASSWORD "anonymous" )
-
-#-----------------------------------------------------------------------------
-# If Slicer_DIR is present, use it to load a number of dependency information
-#-----------------------------------------------------------------------------
-IF( Slicer_DIR )
-  # The Slicer4 config file complains if these are set.
-  UNSET (QT_QMAKE_EXECUTABLE CACHE)
-  UNSET (QT_BINARY_DIR CACHE)
-  UNSET (VTK_DIR CACHE)
-  UNSET (ITK_DIR CACHE)
-  UNSET (PYTHON_LIBRARY CACHE)
-  UNSET (PYTHON_DEBUG_LIBRARY CACHE)
-
-  FIND_PACKAGE(Slicer)
-  
-  IF( Slicer_FOUND )
-    INCLUDE(${Slicer_USE_FILE})
-  ENDIF()
-  
-  IF( ${QT_VERSION_MAJOR} EQUAL 4 )
-    SET(RobartsVTK_USE_QT5_ONLY OFF)
-  ENDIF()
-  
-  # Do not use the openigtlink provided by slicer, we are using igtl v3 in plus
-  UNSET(OpenIGTLink_DIR CACHE)
-  
-  IF( VTK_WRAP_PYTHON )
-    SET(RobartsVTK_WRAP_PYTHON ON)
-  ENDIF()
-ENDIF()
 
 #-----------------------------------------------------------------------------
 # GIT - Let's check if a valid version of GIT is available
@@ -139,63 +103,12 @@ ENDIF()
 # Qt comes first so we know which version to pass to VTK
 #-----------------------------------------------------------------------------
 IF(RobartsVTK_USE_QT)
-  IF( NOT QT_QMAKE_EXECUTABLE )
-    FIND_FILE(QT_QMAKE_EXECUTABLE qmake${CMAKE_EXECUTABLE_SUFFIX} 
-      PATH
-        $ENV{QTDIR}
-        "C:/Qt/4.7.4/bin"
-        "../Qt/4.7.4/bin"
-        "../../Qt/4.7.4/bin"
-        "C:/Qt/4.8.7/bin"
-        "../Qt/4.8.7/bin"
-        "../../Qt/4.8.7/bin"
-      )
-  ENDIF()
+  FIND_PACKAGE(Qt5 REQUIRED COMPONENTS Widgets)
 
-  IF(NOT RobartsVTK_USE_QT5_ONLY)
-      FIND_PACKAGE(Qt4 QUIET)
-  ENDIF()
+  SET(QT_VERSION_MAJOR ${Qt5_VERSION_MAJOR})
 
-  IF ( NOT QT4_FOUND )
-    IF(WIN32 AND EXISTS "${QT_QMAKE_EXECUTABLE}" AND "${Qt5_DIR}" STREQUAL "Qt5_DIR-NOTFOUND")
-      # In Windows, support the QT_QMAKE_EXECUTABLE way for Qt5
-      GET_FILENAME_COMPONENT(ROBARTS_QT_BIN_DIR ${QT_QMAKE_EXECUTABLE} DIRECTORY)
-      GET_FILENAME_COMPONENT(ROBARTS_QT_TOP_DIR ${ROBARTS_QT_BIN_DIR} DIRECTORY)
-      GET_FILENAME_COMPONENT(CMAKE_PREFIX_PATH ${ROBARTS_QT_BIN_DIR} DIRECTORY)
-      SET(Qt5_DIR ${ROBARTS_QT_TOP_DIR}/lib/cmake/Qt5 FORCE)
-    ELSEIF(WIN32 AND EXISTS ${QT_QMAKE_EXECUTABLE})
-      GET_FILENAME_COMPONENT(ROBARTS_QT_BIN_DIR ${QT_QMAKE_EXECUTABLE} DIRECTORY)
-      GET_FILENAME_COMPONENT(ROBARTS_QT_TOP_DIR ${ROBARTS_QT_BIN_DIR} DIRECTORY)
-      GET_FILENAME_COMPONENT(CMAKE_PREFIX_PATH ${ROBARTS_QT_BIN_DIR} DIRECTORY)
-    ENDIF()
-
-    FIND_PACKAGE(Qt5 QUIET COMPONENTS Widgets NO_MODULE)
-
-    IF ( NOT Qt5_FOUND )
-      MESSAGE( FATAL_ERROR "This project requires Qt4 or Qt5 for building RobartsVTK. These components are missing. Please verify configuration by selecting QT_QMAKE_EXECUTABLE (Qt4) or Qt5_DIR (Qt5) or turn off RobartsVTK_USE_QT option.")
-    ENDIF()
-
-    IF(UNIX AND "${Qt5_DIR}" MATCHES "cmake")
-      GET_FILENAME_COMPONENT(CMAKE_PREFIX_PATH ${Qt5_DIR} DIRECTORY)
-    ENDIF()
-
-    IF( WIN32 AND "${QT_QMAKE_EXECUTABLE}" STREQUAL "NOTFOUND" )
-      GET_FILENAME_COMPONENT(ROBARTS_QT_CMAKE_DIR ${Qt5_DIR} DIRECTORY)
-      GET_FILENAME_COMPONENT(ROBARTS_QT_LIB_DIR ${ROBARTS_QT_CMAKE_DIR} DIRECTORY)
-      GET_FILENAME_COMPONENT(ROBARTS_QT_TOP_DIR ${ROBARTS_QT_LIB_DIR} DIRECTORY)
-      SET(QT_QMAKE_EXECUTABLE ${ROBARTS_QT_TOP_DIR}/bin/qmake${CMAKE_EXECUTABLE_SUFFIX} CACHE FILEPATH "Location of Qt qmake executable." FORCE)
-    ENDIF()
-
-    SET(QT_VERSION_MAJOR ${Qt5_VERSION_MAJOR})
-  ENDIF()
-
-  SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE})
-  IF( QT4_FOUND )
-    SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} Qt4::QtCore)
-  ELSE()
-    SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} Qt5::Widgets)
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DQt5_DIR:PATH=${Qt5_DIR})
-  ENDIF()
+  SET(RobartsVTKLib_DEPENDENCIES ${RobartsVTKLib_DEPENDENCIES} Qt5::Widgets)
+  SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DQt5_DIR:PATH=${Qt5_DIR})
 ENDIF()
 
 #-----------------------------------------------------------------------------
@@ -212,10 +125,10 @@ IF(UNIX AND NOT APPLE)
   LIST(GET GCC_VERSION_COMPONENTS 1 GCC_MINOR)
 
   # Allow inline namespacing to enable Qt::Orientation:: etc..
-  IF(${GCC_VERSION} VERSION_GREATER 4.6)
+  IF(${GCC_VERSION} VERSION_GREATER 4.8)
     SET(ADDITIONAL_CXX_FLAGS "-std=c++11" CACHE STRING "Additional CXX Flags")
   ELSE()
-    MESSAGE(FATAL_ERROR "gcc >= 4.7 required to build RobartsVTK. gcc >= 4.9 recommended.")
+    MESSAGE(FATAL_ERROR "gcc >= 4.9 required to build RobartsVTK.")
   ENDIF()
 ENDIF()
 MARK_AS_ADVANCED(ADDITIONAL_CXX_FLAGS)

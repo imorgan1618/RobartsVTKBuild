@@ -16,13 +16,8 @@ ELSE()
     LIST(APPEND EXTRA_OPENCV_ARGS -DWITH_CUDA:BOOL=ON -DBUILD_opencv_cudalegacy:BOOL=OFF)
   ENDIF()
 
-  IF( QT4_FOUND )
-    SET(QT_ARG -DWITH_QT:BOOL=ON -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE})
-  ELSEIF( Qt5_FOUND )
-    GET_FILENAME_COMPONENT(Qt5_PREFIX_PATH ${Qt5_DIR} DIRECTORY)
-    SET(QT_ARG -DWITH_QT:BOOL=ON -DQt5_DIR:PATH=${Qt5_DIR} -DCMAKE_PREFIX_PATH:PATH=${Qt5_PREFIX_PATH})
-  ELSE()
-    SET(QT_ARG -DWITH_QT:BOOL=OFF)
+  IF( Qt5_FOUND )
+    SET(QT_ARG -DWITH_QT:BOOL=ON -DQt5_DIR:PATH=${Qt5_DIR})
   ENDIF()
   
   IF( ${CMAKE_GENERATOR} MATCHES "Visual Studio 11" )
@@ -42,8 +37,8 @@ ELSE()
     SOURCE_DIR "${RobartsVTK_OpenCV_SRC_DIR}"
     BINARY_DIR "${RobartsVTK_OpenCV_DIR}"
     #--Download step--------------
-    GIT_REPOSITORY https://github.com/Itseez/opencv.git
-    GIT_TAG b632f95f8dd869258e50a3b8a2f3c4af9c26ad2d
+    GIT_REPOSITORY https://github.com/opencv/opencv.git
+    GIT_TAG ab3814f9b98fef0c8e165de99be3840f330806c4
     #--Configure step-------------
     CMAKE_ARGS 
       ${ep_common_args}
