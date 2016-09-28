@@ -286,7 +286,7 @@ ENDIF()
     SOURCE_DIR "${RobartsVTK_SRC_DIR}"
     BINARY_DIR "${RobartsVTK_BIN_DIR}"
     #--Download step--------------
-    GIT_REPOSITORY http://Git.imaging.robarts.ca/vasst/RobartsVTK.git
+    GIT_REPOSITORY https://github.com/VASST/RobartsVTK.git
     GIT_TAG master
     #--Configure step-------------
     CMAKE_ARGS 
