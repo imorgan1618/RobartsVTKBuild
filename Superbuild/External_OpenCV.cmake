@@ -5,7 +5,7 @@ IF(OpenCV_DIR)
   
   SET(RobartsVTK_OpenCV_DIR ${OpenCV_DIR} CACHE Internal "Path to OpenCV contents.")
 ELSE()
-  MESSAGE(STATUS "Downloading and building OpenCV from: https://github.com/Itseez/opencv.git")
+  MESSAGE(STATUS "Downloading and building OpenCV from: https://github.com/opencv/opencv.git")
   
   SET(EXTRA_OPENCV_ARGS)
   FIND_PACKAGE(CUDA QUIET)
@@ -15,9 +15,18 @@ ELSE()
   ELSE()
     LIST(APPEND EXTRA_OPENCV_ARGS -DWITH_CUDA:BOOL=ON -DBUILD_opencv_cudalegacy:BOOL=OFF)
   ENDIF()
+  
+  FIND_PACKAGE(Qt5 COMPONENTS Widgets Gui Core Concurrent OpenGL Test)
 
   IF( Qt5_FOUND )
-    SET(QT_ARG -DWITH_QT:BOOL=ON -DQt5_DIR:PATH=${Qt5_DIR})
+    SET(QT_ARG -DWITH_QT:BOOL=ON
+      -DQt5_DIR:PATH=${Qt5_DIR}
+      -DQt5Widgets_DIR:PATH=${Qt5Widgets_DIR}
+      -DQt5Gui_DIR:PATH=${Qt5Gui_DIR}
+      -DQt5Core_DIR:PATH=${Qt5Core_DIR}
+      -DQt5Concurrent_DIR:PATH=${Qt5Concurrent_DIR}
+      -DQt5OpenGL_DIR:PATH=${Qt5OpenGL_DIR}
+      -DQt5Test_DIR:PATH=${Qt5Test_DIR})
   ENDIF()
   
   IF( NOT RobartsVTK_WRAP_PYTHON )
@@ -42,7 +51,7 @@ ELSE()
     BINARY_DIR "${RobartsVTK_OpenCV_DIR}"
     #--Download step--------------
     GIT_REPOSITORY https://github.com/opencv/opencv.git
-    GIT_TAG ab3814f9b98fef0c8e165de99be3840f330806c4
+    GIT_TAG dd379ec9fddc1a1886766cf85844a6e18d38c4f1
     #--Configure step-------------
     CMAKE_ARGS 
       ${ep_common_args}
@@ -50,6 +59,7 @@ ELSE()
       -DCMAKE_CXX_FLAGS=${opencv_common_cxx_flags}
       -DBUILD_SHARED_LIBS:BOOL=ON
       -DBUILD_TESTS:BOOL=OFF
+      -DBUILD_PERF_TESTS:BOOL=OFF
       -DBUILD_DOCS:BOOL=OFF
       -DVTK_DIR:PATH=${RobartsVTK_VTK_DIR} 
       -DWITH_OPENGL:BOOL=ON

@@ -13,16 +13,16 @@ SET(RobartsVTKLib_PROJECT_ARGS)
 SET(RobartsVTKLib_DEPENDENCIES)
 
 # RobartsVTK Options
-OPTION(RobartsVTK_USE_QT "Build with QT enabled" OFF)
-OPTION(RobartsVTK_USE_ITK "Use ITK in RobartsITK" OFF)
-OPTION(RobartsVTK_USE_PLUS "Use the PLUSToolkit for data collection." OFF)
-OPTION(RobartsVTK_USE_REGISTRATION "Build the vtkRobartsRegistration module" OFF)
+OPTION(RobartsVTK_USE_QT "Build with QT enabled" ON)
+OPTION(RobartsVTK_USE_ITK "Use ITK in RobartsITK" ON)
+OPTION(RobartsVTK_USE_PLUS "Use the PLUSToolkit for data collection." ON)
+OPTION(RobartsVTK_USE_REGISTRATION "Build the vtkRobartsRegistration module" ON)
 OPTION(RobartsVTK_USE_COMMON "Build the vtkRobartsCommon module" ON)
-OPTION(RobartsVTK_USE_CUDA "Build the CUDA modules" OFF)
+OPTION(RobartsVTK_USE_CUDA "Build the CUDA modules" ON)
 IF (RobartsVTK_USE_CUDA)
   OPTION(RobartsVTK_USE_CUDA_VISUALIZATION "Build the CUDA visualization modules" ON)
 ENDIF()
-OPTION(RobartsVTK_USE_OpenCL "Build the OpenCL modules" OFF)
+OPTION(RobartsVTK_USE_OpenCL "Build the OpenCL modules" ON)
 OPTION(RobartsVTK_USE_VISUALIZATION  "Build the visualization modules" ON)
 IF (RobartsVTK_USE_CUDA AND RobartsVTK_USE_COMMON)
   OPTION(RobartsVTK_USE_CUDA_ANALYTICS "Build the CUDA image analytics modules" ON)
@@ -77,29 +77,6 @@ IF( NOT GIT_EXECUTABLE)
 ENDIF()
 
 #-----------------------------------------------------------------------------
-# Set up python choices to pass to VTK
-#-----------------------------------------------------------------------------
-SET(RobartsVTK_VTK_PYTHON_ARGS)
-IF( RobartsVTK_WRAP_PYTHON )
-  FIND_PACKAGE(PythonLibs REQUIRED)
-  
-  MARK_AS_ADVANCED(CLEAR PYTHON_INCLUDE_DIR)
-  MARK_AS_ADVANCED(CLEAR PYTHON_LIBRARY)
-  IF( PythonLibs_FOUND )
-    MARK_AS_ADVANCED(CLEAR PYTHON_INCLUDE_DIR)
-    MARK_AS_ADVANCED(CLEAR PYTHON_LIBRARY)
-    GET_FILENAME_COMPONENT(PYTHON_DIR ${PYTHON_INCLUDE_DIR} DIRECTORY)
-    FIND_FILE(PYTHON_EXECUTABLE python${CMAKE_EXECUTABLE_SUFFIX} 
-      PATHS
-      ${PYTHON_DIR}
-      NO_SYSTEM_ENVIRONMENT_PATH
-    )
-
-    SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DPYTHON_INCLUDE_DIR:PATH=${PYTHON_INCLUDE_DIR} -DPYTHON_LIBRARY:FILEPATH=${PYTHON_LIBRARY} -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE})
-  ENDIF()
-ENDIF()
-
-#-----------------------------------------------------------------------------
 # Qt comes first so we know which version to pass to VTK
 #-----------------------------------------------------------------------------
 IF(RobartsVTK_USE_QT)
@@ -150,7 +127,7 @@ SET(ep_dependency_DIR ${CMAKE_BINARY_DIR}/Deps)
 #-----------------------------------------------------------------------------
 # VTK
 #-----------------------------------------------------------------------------
-INCLUDE(External_VTK.cmake)
+INCLUDE(Superbuild/External_VTK.cmake)
 
 IF( VTK_DIR )
   SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DVTK_DIR:PATH=${VTK_DIR})
@@ -166,7 +143,7 @@ ENDIF()
 # ITK
 #-----------------------------------------------------------------------------
 IF(RobartsVTK_USE_ITK)
-  INCLUDE(External_ITK.cmake)
+  INCLUDE(Superbuild/External_ITK.cmake)
   
   IF( ITK_DIR )
     SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DITK_DIR:PATH=${ITK_DIR})
@@ -184,7 +161,7 @@ ENDIF()
 # OpenCV
 #-----------------------------------------------------------------------------
 IF(RobartsVTK_BUILD_APPS)
-  INCLUDE(External_OpenCV.cmake)
+  INCLUDE(Superbuild/External_OpenCV.cmake)
   
   IF( OpenCV_DIR )
     SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DOpenCV_DIR:PATH=${OpenCV_DIR})
@@ -208,7 +185,7 @@ ENDIF()
 # PLUS
 #-----------------------------------------------------------------------------
 IF(RobartsVTK_USE_PLUS)
-  INCLUDE(External_PlusBuild.cmake)
+  INCLUDE(Superbuild/External_PlusBuild.cmake)
 
   SET(RobartsVTK_PlusLib_BIN_DIR ${PLUS_BIN_DIR}/PlusLib-bin)
   SET(RobartsVTK_PlusApp_BIN_DIR ${PLUS_BIN_DIR}/PlusApp-bin)
@@ -232,7 +209,14 @@ ENDIF()
 IF (RobartsVTK_USE_CUDA)
   FIND_PACKAGE(CUDA REQUIRED)
 
-  SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DCUDA_TOOLKIT_ROOT_DIR:PATH=${CUDA_TOOLKIT_ROOT_DIR})
+  # Allow the user to define the CUDA build architectures
+  set(_generations "Fermi" "Kepler" "Maxwell" "Pascal")
+  set(CUDA_GENERATION "" CACHE STRING "Build CUDA device code only for specific GPU architecture. Leave empty to build for all architectures.")
+  if( CMAKE_VERSION VERSION_GREATER "2.8" )
+    set_property( CACHE CUDA_GENERATION PROPERTY STRINGS "" ${_generations} )
+  endif()
+
+  SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DCUDA_GENERATION:STRING=${CUDA_GENERATION} -DCUDA_TOOLKIT_ROOT_DIR:PATH=${CUDA_TOOLKIT_ROOT_DIR})
 ENDIF()
 
 #-----------------------------------------------------------------------------
@@ -257,13 +241,13 @@ IF(RobartsVTK_USE_VISUALIZATION)
   ENDIF()
 
   IF(NOT ZLIB_FOUND)
-    INCLUDE(External_zlib.cmake)
+    INCLUDE(Superbuild/External_zlib.cmake)
     SET(ZLIB_ROOT ${RobartsVTK_zlib_DIR}/install)
   ENDIF()
   SET(libpng_DEPENDENCIES zlib)
   
-  INCLUDE(External_PNG.cmake)
-  INCLUDE(External_FFTW.cmake)
+  INCLUDE(Superbuild/External_PNG.cmake)
+  INCLUDE(Superbuild/External_FFTW.cmake)
   
   LIST(APPEND RobartsVTKLib_DEPENDENCIES FFTW libpng zlib)
   
@@ -279,40 +263,38 @@ ENDIF()
 #-----------------------------------------------------------------------------
 # RobartsVTKLib download
 #-----------------------------------------------------------------------------
-  SET (RobartsVTK_SRC_DIR "${CMAKE_BINARY_DIR}/RobartsVTKLib")
-  SET (RobartsVTK_BIN_DIR "${CMAKE_BINARY_DIR}/RobartsVTKLib-bin" CACHE INTERNAL "Path to store RobartsVTK binaries")
-  ExternalProject_Add( RobartsVTKLib
-    PREFIX "${CMAKE_BINARY_DIR}/RobartsVTKLib-prefix"
-    SOURCE_DIR "${RobartsVTK_SRC_DIR}"
-    BINARY_DIR "${RobartsVTK_BIN_DIR}"
-    #--Download step--------------
-    GIT_REPOSITORY https://github.com/VASST/RobartsVTK.git
-    GIT_TAG master
-    #--Configure step-------------
-    CMAKE_ARGS 
-      -DRobartsVTK_USE_QT:BOOL=${RobartsVTK_USE_QT} 
-      -DRobartsVTK_USE_ITK:BOOL=${RobartsVTK_USE_ITK} 
-      -DRobartsVTK_USE_PLUS:BOOL=${RobartsVTK_USE_PLUS} 
-      -DRobartsVTK_USE_REGISTRATION:BOOL=${RobartsVTK_USE_REGISTRATION} 
-      -DRobartsVTK_USE_COMMON:BOOL=${RobartsVTK_USE_COMMON} 
-      -DRobartsVTK_USE_CUDA:BOOL=${RobartsVTK_USE_CUDA} 
-      -DRobartsVTK_USE_CUDA_VISUALIZATION:BOOL=${RobartsVTK_USE_CUDA_VISUALIZATION} 
-      -DRobartsVTK_USE_VISUALIZATION:BOOL=${RobartsVTK_USE_VISUALIZATION} 
-      -DRobartsVTK_USE_OpenCL:BOOL=${RobartsVTK_USE_OpenCL}
-      -DRobartsVTK_USE_CL_VOLUMERECONSTRUCTION:BOOL=${RobartsVTK_USE_CL_VOLUMERECONSTRUCTION}
-      -DRobartsVTK_USE_CUDA_ANALYTICS:BOOL=${RobartsVTK_USE_CUDA_ANALYTICS} 
-      -DRobartsVTK_USE_QT5_ONLY:BOOL=${RobartsVTK_USE_QT5_ONLY}
-      -DRobartsVTK_BUILD_APPS:BOOL=${RobartsVTK_BUILD_APPS} 
-      -DRobartsVTK_WRAP_PYTHON:BOOL=${RobartsVTK_WRAP_PYTHON} 
-      -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS} 
-      -DBUILD_TESTING:BOOL=${BUILD_TESTING} 
-      -DBUILD_DOCUMENTATION:BOOL=${BUILD_DOCUMENTATION} 
-      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
-      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
-      -DRobartsVTK_VTK_VERSION:STRING=${RobartsVTK_VTK_VERSION}
-      ${RobartsVTKLib_PROJECT_ARGS}
-    #--Build step-----------------
-    #--Install step-----------------
-    INSTALL_COMMAND "" # Do not install
-    DEPENDS ${RobartsVTKLib_DEPENDENCIES}
-    )
+SET (RobartsVTK_SRC_DIR "${CMAKE_BINARY_DIR}/RVTKLib")
+SET (RobartsVTK_BIN_DIR "${CMAKE_BINARY_DIR}/RVTKLib-bin" CACHE INTERNAL "Path to store RobartsVTK binaries")
+ExternalProject_Add( RobartsVTKLib
+  PREFIX "${CMAKE_BINARY_DIR}/RVTKLib-prefix"
+  SOURCE_DIR "${RobartsVTK_SRC_DIR}"
+  BINARY_DIR "${RobartsVTK_BIN_DIR}"
+  #--Download step--------------
+  GIT_REPOSITORY https://github.com/VASST/RobartsVTK.git
+  GIT_TAG master
+  #--Configure step-------------
+  CMAKE_ARGS 
+    -DRobartsVTK_USE_QT:BOOL=${RobartsVTK_USE_QT} 
+    -DRobartsVTK_USE_ITK:BOOL=${RobartsVTK_USE_ITK} 
+    -DRobartsVTK_USE_PLUS:BOOL=${RobartsVTK_USE_PLUS} 
+    -DRobartsVTK_USE_REGISTRATION:BOOL=${RobartsVTK_USE_REGISTRATION} 
+    -DRobartsVTK_USE_COMMON:BOOL=${RobartsVTK_USE_COMMON} 
+    -DRobartsVTK_USE_CUDA:BOOL=${RobartsVTK_USE_CUDA} 
+    -DRobartsVTK_USE_CUDA_VISUALIZATION:BOOL=${RobartsVTK_USE_CUDA_VISUALIZATION} 
+    -DRobartsVTK_USE_VISUALIZATION:BOOL=${RobartsVTK_USE_VISUALIZATION} 
+    -DRobartsVTK_USE_OpenCL:BOOL=${RobartsVTK_USE_OpenCL}
+    -DRobartsVTK_USE_CL_VOLUMERECONSTRUCTION:BOOL=${RobartsVTK_USE_CL_VOLUMERECONSTRUCTION}
+    -DRobartsVTK_USE_CUDA_ANALYTICS:BOOL=${RobartsVTK_USE_CUDA_ANALYTICS} 
+    -DRobartsVTK_BUILD_APPS:BOOL=${RobartsVTK_BUILD_APPS} 
+    -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS} 
+    -DBUILD_TESTING:BOOL=${BUILD_TESTING} 
+    -DBUILD_DOCUMENTATION:BOOL=${BUILD_DOCUMENTATION} 
+    -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
+    -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
+    ${RobartsVTKLib_PROJECT_ARGS}
+    ${OpenCV_Dependency_Arg}
+  #--Build step-----------------
+  #--Install step-----------------
+  INSTALL_COMMAND "" # Do not install
+  DEPENDS ${RobartsVTKLib_DEPENDENCIES}
+  )
