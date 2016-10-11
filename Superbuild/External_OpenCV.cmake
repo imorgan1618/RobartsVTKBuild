@@ -29,9 +29,7 @@ ELSE()
       -DQt5Test_DIR:PATH=${Qt5Test_DIR})
   ENDIF()
   
-  IF( NOT RobartsVTK_WRAP_PYTHON )
-    SET(EXTRA_OPENCV_ARGS -DBUILD_opencv_python2:BOOL=OFF)
-  ENDIF()
+  SET(EXTRA_OPENCV_ARGS -DBUILD_opencv_python2:BOOL=OFF)
   
   IF( ${CMAKE_GENERATOR} MATCHES "Visual Studio 11" )
     SET(ep_common_cxx_flags "${ep_common_cxx_flags} /D_VARIADIC_MAX=10")

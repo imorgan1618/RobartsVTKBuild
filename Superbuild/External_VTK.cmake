@@ -2,10 +2,6 @@ IF(VTK_DIR)
   # VTK has been built already
   FIND_PACKAGE(VTK 7.0 REQUIRED NO_MODULE PATHS ${VTK_DIR} NO_DEFAULT_PATH)
   
-  IF( NOT VTK_WRAP_PYTHON AND RobartsVTK_WRAP_PYTHON )
-    MESSAGE(FATAL_ERROR "Python wrapping requested but VTK located at \"${VTK_DIR}\" was not built with python wrapping enabled.")
-  ENDIF()
-  
   IF( ${VTK_RENDERING_BACKEND} STREQUAL "OpenGL" )
     MESSAGE(FATAL_ERROR "RobartsVTK requires OpenGL2 backend enabled in VTK build. The VTK at ${VTK_DIR} does not have this enabled.")
     SET(VTK_DIR "VTK_DIR-NOTFOUND")
@@ -57,7 +53,6 @@ ELSE()
     CMAKE_ARGS 
         ${ep_common_args}
         ${VTK_VERSION_SPECIFIC_ARGS}
-        ${RobartsVTK_VTK_PYTHON_ARGS}
         -DBUILD_SHARED_LIBS:BOOL=ON 
         -DBUILD_TESTING:BOOL=OFF 
         -DBUILD_EXAMPLES:BOOL=OFF
@@ -66,7 +61,7 @@ ELSE()
         -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
         -DVTK_QT_VERSION:STRING=${QT_VERSION_MAJOR}
         -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
-        -DVTK_WRAP_PYTHON:BOOL=${RobartsVTK_WRAP_PYTHON}
+        -DVTK_WRAP_PYTHON:BOOL=OFF
         -DVTK_SMP_IMPLEMENTATION_TYPE:STRING=OpenMP
         -DCMAKE_PREFIX_PATH:STRING=${CMAKE_PREFIX_PATH}
     #--Build step-----------------
