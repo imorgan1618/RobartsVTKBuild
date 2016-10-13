@@ -6,20 +6,20 @@ IF(OpenCV_DIR)
   SET(RobartsVTK_OpenCV_DIR ${OpenCV_DIR} CACHE Internal "Path to OpenCV contents.")
 ELSE()
   MESSAGE(STATUS "Downloading and building OpenCV from: https://github.com/opencv/opencv.git")
-  
+
   SET(EXTRA_OPENCV_ARGS)
   FIND_PACKAGE(CUDA QUIET)
-  
+
   IF( NOT CUDA_FOUND )
     LIST(APPEND EXTRA_OPENCV_ARGS -DWITH_CUDA:BOOL=OFF)
   ELSE()
     LIST(APPEND EXTRA_OPENCV_ARGS -DWITH_CUDA:BOOL=ON -DBUILD_opencv_cudalegacy:BOOL=OFF)
   ENDIF()
-  
+
   FIND_PACKAGE(Qt5 COMPONENTS Widgets Gui Core Concurrent OpenGL Test)
 
   IF( Qt5_FOUND )
-    SET(QT_ARG -DWITH_QT:BOOL=ON
+    LIST(APPEND EXTRA_OPENCV_ARGS -DWITH_QT:BOOL=ON
       -DQt5_DIR:PATH=${Qt5_DIR}
       -DQt5Widgets_DIR:PATH=${Qt5Widgets_DIR}
       -DQt5Gui_DIR:PATH=${Qt5Gui_DIR}
@@ -29,7 +29,7 @@ ELSE()
       -DQt5Test_DIR:PATH=${Qt5Test_DIR})
   ENDIF()
   
-  SET(EXTRA_OPENCV_ARGS -DBUILD_opencv_python2:BOOL=OFF)
+  LIST(APPEND EXTRA_OPENCV_ARGS -DBUILD_opencv_python2:BOOL=OFF)
   
   IF( ${CMAKE_GENERATOR} MATCHES "Visual Studio 11" )
     SET(ep_common_cxx_flags "${ep_common_cxx_flags} /D_VARIADIC_MAX=10")
