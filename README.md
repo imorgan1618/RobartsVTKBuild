@@ -20,7 +20,6 @@ The superbuild will download and build needed dependencies. Only two items must 
 * [CMake 3.4](https://cmake.org/download/)
 * [CUDA 7](https://developer.nvidia.com/cuda-downloads) (optional)
 * [Qt](http://download.qt.io/archive/qt/) - built (optional, please follow Qt build instructions)
-* [Python 2.7 x64](https://www.python.org/downloads/release/python-2711/) - installed (optional)
 
 ### CMake Configuration
 The following variables should be set when configuring RobartsVTK
@@ -29,9 +28,6 @@ The following variables should be set when configuring RobartsVTK
 * QT4 - QT_QMAKE_EXECUTABLE:FILEPATH = `<path/to/your/qt-buildOrInstall>/bin/qmake.exe`
 * QT5 - as above OR - Qt5_DIR:PATH = `<path/to/your/qt-buildOrInstall>/lib/cmake/Qt5`
 * VTK_DIR:PATH = `<path/to/your/vtk-bin/dir>` (optional, if built elsewhere)
-    * If you're wrapping with python:
-        * PYTHON_INCLUDE_DIR:PATH = `<path/to/python-install>/include`
-        * PYTHON_LIBRARY:PATH = `<path/to/python-install>/libs/python27.lib`
 
 ## License
 Please see the [license](LICENSE.md) file.
