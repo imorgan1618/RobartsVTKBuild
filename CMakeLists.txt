@@ -177,6 +177,10 @@ IF(RobartsVTK_BUILD_APPS)
     ELSE()
       SET(OpenCV_Dependency_Arg -DOpenCV_DIR:PATH=${RobartsVTK_OpenCV_DIR})
     ENDIF()
+    
+    IF(CUDA_FOUND)
+      LIST(APPEND OpenCV_Dependency_Arg -DCUDA_TOOLKIT_ROOT_DIR:PATH=${CUDA_TOOLKIT_ROOT_DIR})
+    ENDIF()
   ENDIF()
 ENDIF()
 
