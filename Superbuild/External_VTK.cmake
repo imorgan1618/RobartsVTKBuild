@@ -1,6 +1,6 @@
 IF(VTK_DIR)
   # VTK has been built already
-  FIND_PACKAGE(VTK 7.0 REQUIRED NO_MODULE PATHS ${VTK_DIR} NO_DEFAULT_PATH)
+  FIND_PACKAGE(VTK 7 REQUIRED NO_MODULE PATHS ${VTK_DIR} NO_DEFAULT_PATH)
   
   IF( ${VTK_RENDERING_BACKEND} STREQUAL "OpenGL" )
     MESSAGE(FATAL_ERROR "RobartsVTK requires OpenGL2 backend enabled in VTK build. The VTK at ${VTK_DIR} does not have this enabled.")
@@ -14,7 +14,7 @@ IF(VTK_DIR)
 ELSE()
   # VTK has not been built yet, so download and build it as an external project
   SET(VTK_GIT_REPOSITORY "gitlab.kitware.com/vtk/vtk.git")
-  SET(VTK_GIT_TAG "v7.0.0")
+  SET(VTK_GIT_TAG "v7.1.0")
   SET(VTK_GIT_PROTOCOL "https")
 
   MESSAGE(STATUS "Downloading and building VTK from: ${VTK_GIT_PROTOCOL}://${VTK_GIT_REPOSITORY}")
