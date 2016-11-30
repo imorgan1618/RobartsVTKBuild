@@ -15,6 +15,7 @@ ELSE()
   ELSE()
     LIST(APPEND EXTRA_OPENCV_ARGS 
       -DWITH_CUDA:BOOL=ON 
+      -DCUDA_GENERATION:STRING=${CUDA_GENERATION}
       -DBUILD_opencv_cudalegacy:BOOL=OFF
       -DCUDA_TOOLKIT_ROOT_DIR:PATH=${CUDA_TOOLKIT_ROOT_DIR})
   ENDIF()
@@ -52,7 +53,7 @@ ELSE()
     BINARY_DIR "${RobartsVTK_OpenCV_DIR}"
     #--Download step--------------
     GIT_REPOSITORY https://github.com/opencv/opencv.git
-    GIT_TAG dd379ec9fddc1a1886766cf85844a6e18d38c4f1
+    GIT_TAG 8842b9b2b2abfaafe52ca4a8f019a3cb35217641
     #--Configure step-------------
     CMAKE_ARGS 
       ${ep_common_args}

@@ -33,6 +33,47 @@ OPTION(BUILD_TESTING "Build testing." OFF)
 OPTION(BUILD_DOCUMENTATION "Build Documentation" OFF)
 
 #-----------------------------------------------------------------------------
+# PLUS device variables
+#-----------------------------------------------------------------------------
+OPTION(PLUS_USE_ULTRASONIX_VIDEO "Provide support for the Ultrasonix ultrasound systems" OFF)
+SET(PLUS_ULTRASONIX_SDK_MAJOR_VERSION 5 CACHE STRING "Set Ultrasonix SDK major version (version: [major].[minor].[patch])")
+SET(PLUS_ULTRASONIX_SDK_MINOR_VERSION 7 CACHE STRING "Set Ultrasonix SDK minor version (version: [major].[minor].[patch])")
+SET(PLUS_ULTRASONIX_SDK_PATCH_VERSION 4 CACHE STRING "Set Ultrasonix SDK patch version (version: [major].[minor].[patch])")
+OPTION(PLUS_USE_BKPROFOCUS_VIDEO "Provide support for BK ProFocus ultrasound systems through the OEM (TCP/IP) interface" OFF)
+OPTION(PLUS_USE_ICCAPTURING_VIDEO "Provide support for the IC framegrabber device" OFF)
+OPTION(PLUS_USE_VFW_VIDEO "Provide support for the Video-for-Windows video digitizer (legacy, use Microsoft Media Foundation instead)" OFF)
+OPTION(PLUS_USE_MMF_VIDEO "Provide support for the Microsoft Media Foundation video digitizers (requires installation of Windows Platform SDK 7.1 or later)" OFF)
+OPTION(PLUS_USE_EPIPHAN "Provide support for the Epiphan framegrabber device" OFF)
+OPTION(PLUS_USE_CAPISTRANO_VIDEO "Provide support for the Capistrano Labs USB ultrasound probes" OFF)
+OPTION(PLUS_USE_INTERSON_VIDEO "Provide support for the Interson USB ultrasound probes" OFF)
+OPTION(PLUS_USE_INTERSONSDKCXX_VIDEO "Provide support for the Interson SDK 1.X with C++ Wrapper USB ultrasound probes" OFF)
+OPTION(PLUS_USE_TELEMED_VIDEO "Provide support for the Telemed ultrasound probes" OFF)
+OPTION(PLUS_USE_THORLABS_VIDEO "Provide support for the ThorLabs Compact Spectrometers" OFF)
+OPTION(PLUS_USE_OPTITRACK "Provide support for the OptiTrack tracking system" OFF)
+OPTION(PLUS_USE_OPTIMET_CONOPROBE "Provide support for the Optimet ConoProbe" OFF)
+OPTION(PLUS_USE_NDI "Provide support for the NDI POLARIS and AURORA" OFF)
+OPTION(PLUS_USE_NDI_CERTUS "Provide support for the NDI Certus" OFF)
+OPTION(PLUS_USE_POLARIS "Provide support for the NDI POLARIS and AURORA" OFF)
+OPTION(PLUS_USE_MICRONTRACKER "Provide support for the Claron MicronTracker" OFF)
+OPTION(PLUS_USE_INTELREALSENSE "Provide support for Intel RealSense cameras" OFF)
+OPTION(PLUS_USE_BRACHY_TRACKER "Provide support for the Brachy Steppers" OFF)
+OPTION(PLUS_USE_USDIGITALENCODERS_TRACKER "Provide support for multiple USDigital encoders tracking device" OFF)
+OPTION(PLUS_USE_Ascension3DG "Provide support for the Ascension 3DG Tracker" OFF)
+OPTION(PLUS_USE_Ascension3DGm "Provide support for the Ascension MedSafe Tracker" OFF)
+OPTION(PLUS_USE_PHIDGET_SPATIAL_TRACKER "Provide support for the Phidget Spatial accelerometer" OFF)
+OPTION(PLUS_USE_3dConnexion_TRACKER "Provide support for the 3dConnexion 3d mouse" OFF)
+OPTION(PLUS_USE_STEALTHLINK "Provide support for the Medtronick StealthLink Server" OFF)
+OPTION(PLUS_USE_IntuitiveDaVinci "Provide support for the da Vinci Surgical System" OFF)
+OPTION(PLUS_USE_OvrvisionPro "Provide support for the OvrvisionPro Stereo Camera" OFF)
+OPTION(PLUS_USE_tesseract "Provide support for screen reading virtual device." OFF)
+OPTION(PLUS_USE_PHILIPS_3D_ULTRASOUND "Provide support for the Philips ie33 3D ultrasound probe" OFF)
+OPTION(PLUS_USE_NVIDIA_DVP "Provide support for the NVidia Digital Video Pipeline" OFF)
+IF (PLUS_USE_NVIDIA_DVP)
+  FIND_PACKAGE(QuadroSDI REQUIRED)
+  FIND_PACKAGE(OpenGL REQUIRED)
+ENDIF()
+
+#-----------------------------------------------------------------------------
 # Preparatory setup
 #-----------------------------------------------------------------------------
 SET(Plus_DEPENDENCIES)
@@ -224,15 +265,6 @@ IF (RobartsVTK_USE_CUDA)
   set_property( CACHE CUDA_GENERATION PROPERTY STRINGS "" ${_generations} )
 
   SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DCUDA_GENERATION:STRING=${CUDA_GENERATION} -DCUDA_TOOLKIT_ROOT_DIR:PATH=${CUDA_TOOLKIT_ROOT_DIR})
-ENDIF()
-
-#-----------------------------------------------------------------------------
-# CUDA
-#-----------------------------------------------------------------------------
-IF (RobartsVTK_USE_CUDA)
-  FIND_PACKAGE(CUDA REQUIRED)
-
-  SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DCUDA_TOOLKIT_ROOT_DIR:PATH=${CUDA_TOOLKIT_ROOT_DIR})
 ENDIF()
 
 IF(RobartsVTK_USE_VISUALIZATION)
