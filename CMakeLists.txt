@@ -51,7 +51,7 @@ OPTION(PLUS_USE_TELEMED_VIDEO "Provide support for the Telemed ultrasound probes
 OPTION(PLUS_USE_THORLABS_VIDEO "Provide support for the ThorLabs Compact Spectrometers" OFF)
 OPTION(PLUS_USE_OPTITRACK "Provide support for the OptiTrack tracking system" OFF)
 OPTION(PLUS_USE_OPTIMET_CONOPROBE "Provide support for the Optimet ConoProbe" OFF)
-OPTION(PLUS_USE_NDI "Provide support for the NDI POLARIS and AURORA" OFF)
+OPTION(PLUS_USE_NDI "Provide support for the NDI POLARIS and AURORA" ${RobartsVTK_BUILD_APPS})
 OPTION(PLUS_USE_NDI_CERTUS "Provide support for the NDI Certus" OFF)
 OPTION(PLUS_USE_POLARIS "Provide support for the NDI POLARIS and AURORA" OFF)
 OPTION(PLUS_USE_MICRONTRACKER "Provide support for the Claron MicronTracker" OFF)
