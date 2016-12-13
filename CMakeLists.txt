@@ -19,10 +19,11 @@ OPTION(RobartsVTK_USE_PLUS "Use the PLUSToolkit for data collection." ON)
 OPTION(RobartsVTK_USE_REGISTRATION "Build the vtkRobartsRegistration module" ON)
 OPTION(RobartsVTK_USE_COMMON "Build the vtkRobartsCommon module" ON)
 OPTION(RobartsVTK_USE_CUDA "Build the CUDA modules" ON)
-IF (RobartsVTK_USE_CUDA)
+OPTION(RobartsVTK_DOWNLOAD_DATA "Download the RobartsVTK data" ON)
+IF(RobartsVTK_USE_CUDA)
   OPTION(RobartsVTK_USE_CUDA_VISUALIZATION "Build the CUDA visualization modules" ON)
 ENDIF()
-IF (RobartsVTK_USE_CUDA AND RobartsVTK_USE_COMMON)
+IF(RobartsVTK_USE_CUDA AND RobartsVTK_USE_COMMON)
   OPTION(RobartsVTK_USE_CUDA_ANALYTICS "Build the CUDA image analytics modules" ON)
 ENDIF()
 OPTION(RobartsVTK_USE_OpenCL "Build the OpenCL modules" ON)
@@ -68,7 +69,7 @@ OPTION(PLUS_USE_OvrvisionPro "Provide support for the OvrvisionPro Stereo Camera
 OPTION(PLUS_USE_tesseract "Provide support for screen reading virtual device." OFF)
 OPTION(PLUS_USE_PHILIPS_3D_ULTRASOUND "Provide support for the Philips ie33 3D ultrasound probe" OFF)
 OPTION(PLUS_USE_NVIDIA_DVP "Provide support for the NVidia Digital Video Pipeline" OFF)
-IF (PLUS_USE_NVIDIA_DVP)
+IF(PLUS_USE_NVIDIA_DVP)
   FIND_PACKAGE(QuadroSDI REQUIRED)
   FIND_PACKAGE(OpenGL REQUIRED)
 ENDIF()
@@ -250,7 +251,7 @@ IF(RobartsVTK_USE_PLUS)
   ENDIF()
 ENDIF()
 
-IF (RobartsVTK_USE_CUDA)
+IF(RobartsVTK_USE_CUDA)
   IF("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
     set(_generations "Fermi" "Kepler" "Maxwell" "Pascal")
     FIND_PACKAGE(CUDA 7.0 REQUIRED)
@@ -294,16 +295,20 @@ IF(RobartsVTK_USE_VISUALIZATION)
   SET(RobartsVTKLib_PROJECT_ARGS ${RobartsVTKLib_PROJECT_ARGS} -DZLIB_ROOT:PATH=${ZLIB_ROOT} -DFFTW_ROOT_DIR:PATH=${RobartsVTK_FFTW_DIR} -DPNG_CMAKE_FILE:FILEPATH=${RobartsVTK_PNG_DIR}/install/lib/libpng/libpng16.cmake)
 ENDIF()
 
-IF (RobartsVTK_USE_OpenCL)
+IF(RobartsVTK_USE_OpenCL)
   FIND_PACKAGE(OpenCL REQUIRED)
   OPTION(RobartsVTK_USE_CL_VOLUMERECONSTRUCTION "Build the OpenCL Volume Reconstruction modules" ON)
+ENDIF()
+
+IF(RobartsVTK_DOWNLOAD_DATA)
+  INCLUDE(Superbuild/External_RobartsVTKData.cmake)
 ENDIF()
 
 #-----------------------------------------------------------------------------
 # RobartsVTKLib download
 #-----------------------------------------------------------------------------
-SET (RobartsVTK_SRC_DIR "${CMAKE_BINARY_DIR}/RVTKLib")
-SET (RobartsVTK_BIN_DIR "${CMAKE_BINARY_DIR}/RVTKLib-bin" CACHE INTERNAL "Path to store RobartsVTK binaries")
+SET(RobartsVTK_SRC_DIR "${CMAKE_BINARY_DIR}/RVTKLib")
+SET(RobartsVTK_BIN_DIR "${CMAKE_BINARY_DIR}/RVTKLib-bin" CACHE INTERNAL "Path to store RobartsVTK binaries")
 ExternalProject_Add( RobartsVTKLib
   PREFIX "${CMAKE_BINARY_DIR}/RVTKLib-prefix"
   SOURCE_DIR "${RobartsVTK_SRC_DIR}"
@@ -325,6 +330,7 @@ ExternalProject_Add( RobartsVTKLib
     -DRobartsVTK_USE_CL_VOLUMERECONSTRUCTION:BOOL=${RobartsVTK_USE_CL_VOLUMERECONSTRUCTION}
     -DRobartsVTK_USE_CUDA_ANALYTICS:BOOL=${RobartsVTK_USE_CUDA_ANALYTICS} 
     -DRobartsVTK_BUILD_APPS:BOOL=${RobartsVTK_BUILD_APPS} 
+    -DRobartsVTK_Data_DIR:PATH=${RobartsVTK_Data_DIR}
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS} 
     -DBUILD_TESTING:BOOL=${BUILD_TESTING} 
     -DBUILD_DOCUMENTATION:BOOL=${BUILD_DOCUMENTATION} 
