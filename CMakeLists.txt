@@ -1,6 +1,8 @@
 PROJECT(RobartsVTKSuperBuild)
 
+#-----------------------------------------------------------------------------
 # CMake version requirements
+#-----------------------------------------------------------------------------
 CMAKE_MINIMUM_REQUIRED(VERSION 3.2)
 cmake_policy(SET CMP0003 NEW)
 
@@ -12,7 +14,9 @@ find_package(PkgConfig QUIET)
 SET(RobartsVTKLib_PROJECT_ARGS)
 SET(RobartsVTKLib_DEPENDENCIES)
 
+#-----------------------------------------------------------------------------
 # RobartsVTK Options
+#-----------------------------------------------------------------------------
 OPTION(RobartsVTK_USE_QT "Build with QT enabled" ON)
 OPTION(RobartsVTK_USE_ITK "Use ITK in RobartsITK" ON)
 OPTION(RobartsVTK_USE_PLUS "Use the PLUSToolkit for data collection." ON)
