@@ -13,8 +13,8 @@ IF(VTK_DIR)
   SET(RobartsVTK_VTK_DIR ${VTK_DIR})
 ELSE()
   # VTK has not been built yet, so download and build it as an external project
-  SET(VTK_GIT_REPOSITORY "gitlab.kitware.com/vtk/vtk.git")
-  SET(VTK_GIT_TAG "v7.1.0")
+  SET(VTK_GIT_REPOSITORY "github.com/imorgan1618/VTK.git")
+  SET(VTK_GIT_BRANCH "im/vtk")
   SET(VTK_GIT_PROTOCOL "https")
 
   MESSAGE(STATUS "Downloading and building VTK from: ${VTK_GIT_PROTOCOL}://${VTK_GIT_REPOSITORY}")
